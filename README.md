@@ -1,6 +1,6 @@
 # ros_camera_server_benchmarks
 
-End-to-end latency benchmark harness comparing `ros_camera_server`
+End-to-end latency benchmark harness comparing [`ros_camera_server`](https://www.github.com/StefanFabian/ros_camera_server)
 against `usb_cam`, `gscam`, `ros-gst-bridge`, `web_video_server`, and
 `rtsp_image_transport`. Each frame carries a pixel-domain marker with
 a `CLOCK_MONOTONIC` timestamp; receivers decode it after their normal
@@ -49,8 +49,7 @@ On the notebook results in [RESULTS.md](RESULTS.md):
   `cam-ros-rcs-mjpeg` passthrough is uniquely cheap (1.80 ms) because
   the ROS topic carries `CompressedImage` and no decode happens.
 
-For the cost-layer breakdown see
-[METHODOLOGY.md "Cost layers"](METHODOLOGY.md#cost-layers).
+In summary, this shows that despite the significantly easier configuration, the [ros_camera_server](https://www.github.com/StefanFabian/ros_camera_server) is at least competitive and in some cases even faster than alternative tuned approaches.
 
 ## Plots
 
