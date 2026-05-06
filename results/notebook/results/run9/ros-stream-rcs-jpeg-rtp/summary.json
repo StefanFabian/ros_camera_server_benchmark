@@ -1,0 +1,101 @@
+{
+  "scenario": "ros-stream-rcs-jpeg-rtp",
+  "duration_s": 15,
+  "warmup_frames": 60,
+  "expected_after_warmup": 390,
+  "stream": {
+    "count": 319,
+    "expected": 390,
+    "frame_loss": 0.18205128205128207,
+    "fps_effective": 29.996850941907685,
+    "mean_ms": 6.813870767001328,
+    "stddev_ms": 0.7372085006095456,
+    "p50_ms": 6.680451362612612,
+    "p95_ms": 8.172459062612612,
+    "p99_ms": 9.182998842612609,
+    "max_ms": 10.819524362612613,
+    "p50_ms_raw": 8.464011,
+    "p95_ms_raw": 9.9560187,
+    "p99_ms_raw": 10.966558479999996,
+    "mean_ms_raw": 8.597430404388716,
+    "max_ms_raw": 12.603084,
+    "producer_encode_mean_ms": 1.7835596373873874,
+    "first_id": 124,
+    "last_id": 442,
+    "gap_count": 0,
+    "seen": 379,
+    "decoded": 379,
+    "decoded_ratio": 1.0
+  },
+  "ros_raw": {
+    "count": 0,
+    "expected": 390,
+    "frame_loss": null,
+    "fps_effective": null,
+    "mean_ms": null,
+    "stddev_ms": null,
+    "p50_ms": null,
+    "p95_ms": null,
+    "p99_ms": null,
+    "max_ms": null,
+    "p50_ms_raw": null,
+    "p95_ms_raw": null,
+    "p99_ms_raw": null,
+    "mean_ms_raw": null,
+    "max_ms_raw": null,
+    "producer_encode_mean_ms": 1.7835596373873874,
+    "first_id": null,
+    "last_id": null,
+    "gap_count": null,
+    "seen": null,
+    "decoded": null,
+    "decoded_ratio": null
+  },
+  "ros_jpeg": {
+    "count": 0,
+    "expected": 390,
+    "frame_loss": null,
+    "fps_effective": null,
+    "mean_ms": null,
+    "stddev_ms": null,
+    "p50_ms": null,
+    "p95_ms": null,
+    "p99_ms": null,
+    "max_ms": null,
+    "p50_ms_raw": null,
+    "p95_ms_raw": null,
+    "p99_ms_raw": null,
+    "mean_ms_raw": null,
+    "max_ms_raw": null,
+    "producer_encode_mean_ms": 1.7835596373873874,
+    "first_id": null,
+    "last_id": null,
+    "gap_count": null,
+    "seen": null,
+    "decoded": null,
+    "decoded_ratio": null
+  },
+  "cpu_stack": {
+    "ros2": {
+      "mean_pct": 0.0,
+      "p95_pct": 0.0,
+      "n": 26
+    },
+    "camera_server_s": {
+      "mean_pct": 8.923076923076923,
+      "p95_pct": 11.5,
+      "n": 26
+    },
+    "_total": {
+      "mean_pct": 8.923076923076923,
+      "p95_pct": 11.5,
+      "n": 26
+    }
+  },
+  "producer": {
+    "frames_produced": 444,
+    "encode_count": 444,
+    "encode_total_ns": 791900479,
+    "encode_max_ns": 4698950
+  }
+}

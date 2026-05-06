@@ -1,0 +1,69 @@
++ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video10 --width 1280 --height 720 --fps 30 --format yuyv --duration 45 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-stream-usb_cam+rtsp_fkie-yuv-h264/frame_gen_stats.csv --video ../input.robocup_crossing_ramps.mp4 --video-cycle-seconds 60
+frame_gen: first base-video frame ready after 1635.4 ms (cycle capacity = 1800 frames)
++ ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=30 rtsp_bitrate:=1000000
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-20-10-12-259378-Stefan-TP-Ubuntu24-377445
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [usb_cam_node_exe-1]: process started with pid [377465]
+[INFO] [republish-2]: process started with pid [377466]
+[republish-2] [0m[INFO] [1778004612.407234211] [rtsp_republisher]: The 'in_transport' parameter is set to: raw[0m
+[republish-2] [0m[INFO] [1778004612.407275111] [rtsp_republisher]: The 'out_transport' parameter is set to: [0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.501802178] [usb_cam]: [/image_raw] new RTSP session at rtsp://192.168.238.101:35715/[0m
+[republish-2] [0m[INFO] [1778004612.503986743] [rtsp_republisher]: [/out] new RTSP session at rtsp://192.168.238.101:44637/[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.510069559] [usb_cam]: camera_name value: default_cam[0m
+[usb_cam_node_exe-1] [33m[WARN] [1778004612.510095839] [usb_cam]: framerate: 30.000000[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.511046395] [usb_cam]: using default calibration URL[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.511071764] [usb_cam]: camera calibration URL: file:///home/stefan/.ros/camera_info/default_cam.yaml[0m
+[usb_cam_node_exe-1] [31m[ERROR] [1778004612.511101392] [camera_calibration_parsers]: Unable to open camera calibration file [/home/stefan/.ros/camera_info/default_cam.yaml][0m
+[usb_cam_node_exe-1] [33m[WARN] [1778004612.511131906] [usb_cam]: Camera calibration file /home/stefan/.ros/camera_info/default_cam.yaml not found[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.511515076] [usb_cam]: Starting 'default_cam' (/dev/video10) at 1280x720 via mmap (yuyv2rgb) at 30 FPS[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.512213674] [usb_cam]: Setting 'brightness' to 50[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.519207126] [usb_cam]: Setting 'white_balance_temperature_auto' to 1[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.519231308] [usb_cam]: Setting 'exposure_auto' to 3[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.522359810] [usb_cam]: Setting 'focus_auto' to 0[0m
+[usb_cam_node_exe-1] [0m[INFO] [1778004612.525546635] [usb_cam]: Timer triggering every 33 ms[0m
++ ros2 topic hz /out
++ bash -c ros2 topic echo --qos-durability transient_local                                     --qos-reliability reliable                                     --qos-history keep_last --qos-depth 1                                     '/out/rtsp' std_msgs/msg/String                     > '/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-stream-usb_cam+rtsp_fkie-yuv-h264/rtsp_url.log' 2>&1
++ ros2 launch ros_camera_server_benchmarks rtsp_camera_proxy_recv.launch.yaml in_base:=/out out_topic:=/bench/rtsp_recv_image
+average rate: 30.036
+	min: 0.032s max: 0.034s std dev: 0.00042s window: 32
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-20-10-17-243046-Stefan-TP-Ubuntu24-377807
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [republish-1]: process started with pid [377812]
+[republish-1] [0m[INFO] [1778004617.361165822] [rtsp_subscriber]: The 'in_transport' parameter is set to: raw[0m
+[republish-1] [0m[INFO] [1778004617.361201348] [rtsp_subscriber]: The 'out_transport' parameter is set to: [0m
+[republish-1] [0m[INFO] [1778004617.444139399] [rtsp_subscriber]: [/out] new RTSP session at rtsp://192.168.238.101:60747/[0m
++ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_stream -p topic:=/bench/rtsp_recv_image -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-stream-usb_cam+rtsp_fkie-yuv-h264/stream.csv -p warmup:=60 -p max_frames:=750
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 377445 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-stream-usb_cam+rtsp_fkie-yuv-h264/cpu.csv --interval-hz 2 --duration 15
+average rate: 29.978
+	min: 0.026s max: 0.039s std dev: 0.00150s window: 62
+average rate: 30.024
+	min: 0.026s max: 0.039s std dev: 0.00132s window: 93
+average rate: 30.026
+	min: 0.026s max: 0.039s std dev: 0.00115s window: 124
+average rate: 30.020
+	min: 0.026s max: 0.039s std dev: 0.00105s window: 154
+average rate: 30.016
+	min: 0.026s max: 0.039s std dev: 0.00102s window: 184
+average rate: 30.014
+	min: 0.026s max: 0.039s std dev: 0.00096s window: 214
+average rate: 30.012
+	min: 0.026s max: 0.039s std dev: 0.00094s window: 245
+average rate: 30.009
+	min: 0.026s max: 0.039s std dev: 0.00090s window: 276
+average rate: 30.010
+	min: 0.026s max: 0.039s std dev: 0.00086s window: 307
+average rate: 30.009
+	min: 0.026s max: 0.039s std dev: 0.00083s window: 337
+average rate: 30.009
+	min: 0.026s max: 0.039s std dev: 0.00081s window: 368
+average rate: 30.007
+	min: 0.026s max: 0.039s std dev: 0.00080s window: 398
+average rate: 30.007
+	min: 0.026s max: 0.039s std dev: 0.00080s window: 429
+average rate: 30.006
+	min: 0.026s max: 0.039s std dev: 0.00078s window: 459
+average rate: 30.005
+	min: 0.026s max: 0.039s std dev: 0.00078s window: 489
+[run_scenario] cleanup
+[0m[INFO] [1778004632.977267016] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+ros_recv: seen=445 decoded=445 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-stream-usb_cam+rtsp_fkie-yuv-h264/stream.csv

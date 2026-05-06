@@ -1,0 +1,23 @@
+launch:
+  # cam-ros-usb_cam-yuv: usb_cam YUYV -> rgb8 ROS topic only. No bridge / no encoder;
+  # ros_recv subscribes to image_topic and stamps recv at message arrival.
+  - arg: { name: "device", default: "/dev/video10" }
+  - arg: { name: "width", default: "1280" }
+  - arg: { name: "height", default: "720" }
+  - arg: { name: "fps", default: "30" }
+  - arg: { name: "image_topic", default: "/bench/out_raw" }
+
+  - node:
+      pkg: "usb_cam"
+      exec: "usb_cam_node_exe"
+      name: "usb_cam"
+      env:
+        - { name: "LD_PRELOAD", value: "$(find-pkg-prefix ros_camera_server_benchmarks)/lib/ros_camera_server_benchmarks/libv4l2loopback_timeperframe_shim.so" }
+      param:
+        - { name: "video_device", value: "$(var device)" }
+        - { name: "image_width",  value: "$(var width)" }
+        - { name: "image_height", value: "$(var height)" }
+        - { name: "framerate",    value: "$(var fps).0" }
+        - { name: "pixel_format", value: "yuyv2rgb" }
+      remap:
+        - { from: "/image_raw", to: "$(var image_topic)" }

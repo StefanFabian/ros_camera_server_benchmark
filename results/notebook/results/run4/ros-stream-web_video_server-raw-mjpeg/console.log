@@ -1,0 +1,23 @@
++ ros2 run ros_camera_server_benchmarks ros_pub --ros-args -p kind:=raw -p topic:=/bench/image_raw -p width:=1280 -p height:=720 -p fps:=30 -p encode_stats:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/ros-stream-web_video_server-raw-mjpeg/ros_pub_stats.csv -p video:=../input.robocup_crossing_ramps.mp4 -p video_cycle_seconds:=60
+[0m[INFO] [1778002105.498815995] [ros_pub]: base video first frame ready, cycle capacity 1800[0m
++ ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_ros_raw.launch.yaml wvs_port:=8888
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-19-28-26-045265-Stefan-TP-Ubuntu24-280886
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [web_video_server-1]: process started with pid [280916]
+[web_video_server-1] [0m[INFO] [1778002106.170394063] [web_video_server]: Loading streamer plugin: web_video_server/stream/h264[0m
+[web_video_server-1] [0m[INFO] [1778002106.265159313] [web_video_server]: Loading streamer plugin: web_video_server/stream/mjpeg[0m
+[web_video_server-1] [0m[INFO] [1778002106.265206348] [web_video_server]: Loading streamer plugin: web_video_server/stream/png[0m
+[web_video_server-1] [0m[INFO] [1778002106.265219308] [web_video_server]: Loading streamer plugin: web_video_server/stream/ros_compressed[0m
+[web_video_server-1] [0m[INFO] [1778002106.265233191] [web_video_server]: Loading streamer plugin: web_video_server/stream/vp8[0m
+[web_video_server-1] [0m[INFO] [1778002106.265244565] [web_video_server]: Loading streamer plugin: web_video_server/stream/vp9[0m
+[web_video_server-1] [0m[INFO] [1778002106.265256224] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/jpeg[0m
+[web_video_server-1] [0m[INFO] [1778002106.265500455] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/png[0m
+[web_video_server-1] [0m[INFO] [1778002106.265512250] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/ros_compressed[0m
+[web_video_server-1] [0m[INFO] [1778002106.265591662] [web_video_server]: Waiting For connections on 0.0.0.0:8888[0m
++ ros2 run ros_camera_server_benchmarks gst_recv --mode http-mjpeg --uri http://127.0.0.1:8888/stream?topic=/bench/image_raw&type=mjpeg --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/ros-stream-web_video_server-raw-mjpeg/stream.csv --warmup-frames 60 --max-frames 750
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 280886 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/ros-stream-web_video_server-raw-mjpeg/cpu.csv --interval-hz 2 --duration 15
+[web_video_server-1] [0m[INFO] [1778002110.924238803] [web_video_server]: Handling Request: /stream?topic=/bench/image_raw&type=mjpeg[0m
+[web_video_server-1] [0m[INFO] [1778002110.924382201] [web_video_server.mjpeg_streamer]: Streaming topic /bench/image_raw with QoS profile default[0m
+[run_scenario] cleanup
+[0m[INFO] [1778002125.738713037] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+gst_recv[http-mjpeg]: seen=445 decoded=445 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/ros-stream-web_video_server-raw-mjpeg/stream.csv

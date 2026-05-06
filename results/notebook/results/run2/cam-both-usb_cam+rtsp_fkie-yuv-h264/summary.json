@@ -1,0 +1,110 @@
+{
+  "scenario": "cam-both-usb_cam+rtsp_fkie-yuv-h264",
+  "duration_s": 15,
+  "warmup_frames": 60,
+  "expected_after_warmup": 390,
+  "stream": {
+    "count": 384,
+    "expected": 390,
+    "frame_loss": 0.01538461538461533,
+    "fps_effective": 30.000455894917458,
+    "mean_ms": 7.180091130513986,
+    "stddev_ms": 0.5318861700973445,
+    "p50_ms": 7.055212695618153,
+    "p95_ms": 8.202389595618152,
+    "p99_ms": 8.927512305618167,
+    "max_ms": 12.427695195618155,
+    "p50_ms_raw": 7.3124865,
+    "p95_ms_raw": 8.459663399999998,
+    "p99_ms_raw": 9.184786110000013,
+    "mean_ms_raw": 7.437364934895833,
+    "max_ms_raw": 12.684969,
+    "producer_encode_mean_ms": 0.2572738043818466,
+    "first_id": 254,
+    "last_id": 637,
+    "gap_count": 0,
+    "seen": 444,
+    "decoded": 444,
+    "decoded_ratio": 1.0
+  },
+  "ros_raw": {
+    "count": 554,
+    "expected": 390,
+    "frame_loss": 0.0,
+    "fps_effective": 30.01608449285528,
+    "mean_ms": 3.981784637856421,
+    "stddev_ms": 1.4296775012446092,
+    "p50_ms": 3.5515386956181536,
+    "p95_ms": 6.718477995618154,
+    "p99_ms": 11.191875905618154,
+    "max_ms": 13.253485195618154,
+    "p50_ms_raw": 3.8088125,
+    "p95_ms_raw": 6.975751800000001,
+    "p99_ms_raw": 11.44914971,
+    "mean_ms_raw": 4.239058442238267,
+    "max_ms_raw": 13.510759,
+    "producer_encode_mean_ms": 0.2572738043818466,
+    "first_id": 85,
+    "last_id": 638,
+    "gap_count": 0,
+    "seen": 614,
+    "decoded": 614,
+    "decoded_ratio": 1.0
+  },
+  "ros_jpeg": {
+    "count": 0,
+    "expected": 390,
+    "frame_loss": null,
+    "fps_effective": null,
+    "mean_ms": null,
+    "stddev_ms": null,
+    "p50_ms": null,
+    "p95_ms": null,
+    "p99_ms": null,
+    "max_ms": null,
+    "p50_ms_raw": null,
+    "p95_ms_raw": null,
+    "p99_ms_raw": null,
+    "mean_ms_raw": null,
+    "max_ms_raw": null,
+    "producer_encode_mean_ms": 0.2572738043818466,
+    "first_id": null,
+    "last_id": null,
+    "gap_count": null,
+    "seen": null,
+    "decoded": null,
+    "decoded_ratio": null
+  },
+  "cpu_stack": {
+    "ros2": {
+      "mean_pct": 0.0,
+      "p95_pct": 0.0,
+      "n": 26
+    },
+    "usb_cam_node_ex": {
+      "mean_pct": 8.0,
+      "p95_pct": 10.0,
+      "n": 26
+    },
+    "republish": {
+      "mean_pct": 6.230769230769231,
+      "p95_pct": 8.0,
+      "n": 26
+    },
+    "_total": {
+      "mean_pct": 14.23076923076923,
+      "p95_pct": 16.0,
+      "n": 26
+    }
+  },
+  "producer": {
+    "frames_produced": 639,
+    "underruns": 0,
+    "underrun_total_late_ms": 0,
+    "base_video_frames": 1100,
+    "base_video_catch_up_reuses": 0,
+    "encode_count": 639,
+    "encode_total_ns": 164397961,
+    "encode_max_ns": 692976
+  }
+}

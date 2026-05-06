@@ -1,0 +1,24 @@
+launch:
+  # cam-ros-gscam-mjpeg: gscam MJPEG (jpegdec internally) -> rgb8 ROS topic only.
+  - arg: { name: "device", default: "/dev/video11" }
+  - arg: { name: "image_topic", default: "/bench/out_raw" }
+  - arg: { name: "width", default: "1280" }
+  - arg: { name: "height", default: "720" }
+  - arg: { name: "fps", default: "30" }
+
+  - node:
+      pkg: "gscam"
+      exec: "gscam_node"
+      name: "gscam"
+      param:
+        - name: "gscam_config"
+          value: "v4l2src device=$(var device) ! image/jpeg,width=$(var width),height=$(var height),framerate=$(var fps)/1 ! jpegdec ! videoconvert"
+        - { name: "frame_id",   value: "bench" }
+        - { name: "image_encoding", value: "rgb8" }
+        # gscam's appsink defaults to sync=true, which holds frames to
+        # pipeline running time and adds ~1 frame of latency vs usb_cam /
+        # rcs. Force sync_sink=false so the comparison reflects pipeline
+        # overhead, not gscam's clocking choice.
+        - { name: "sync_sink",  value: false }
+      remap:
+        - { from: "/camera/image_raw", to: "$(var image_topic)" }

@@ -1,0 +1,8 @@
+launch:
+  - arg: { name: "config_path" }
+  - arg: { name: "log_level", default: "info" }
+  - include:
+      file: "$(find-pkg-share ros_camera_server)/launch/server.launch.yaml"
+      arg:
+        - { name: "config_path", value: "$(var config_path)" }
+        - { name: "log_level", value: "$(var log_level)" }

@@ -1,0 +1,20 @@
+robot: "bench"
+address: "127.0.0.1"
+cameras:
+  bench:
+    name: "bench_v4l2_mjpeg_rosonly"
+    input:
+      type: v4l2
+      device: "/dev/video11"
+      width: 1280
+      height: 720
+      framerate: "30/1"
+    # cam-ros-rcs-mjpeg: passthrough CompressedImage on ROS, no RTP output.
+    # The dual-output config (rcs_v4l2_mjpeg.yaml) is reserved for
+    # cam-both-rcs-mjpeg-rtp; sharing it with cam-ros ran an unused RTP
+    # encoder alongside the publish, which is not what usb_cam / gscam do.
+    outputs:
+      - type: ros2
+        topic: "/bench/out_compressed"
+        frame_id: "bench"
+        codec: compressed

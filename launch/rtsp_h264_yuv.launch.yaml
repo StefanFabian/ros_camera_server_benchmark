@@ -1,0 +1,48 @@
+launch:
+  # cam-stream-usb_cam+rtsp_fkie-yuv-h264 / cam-both-usb_cam+rtsp_fkie-yuv-h264: usb_cam YUYV -> rgb8 ROS topic ->
+  # image_transport `republish raw rtsp_pub`. The `rtsp_pub` transport
+  # auto-allocates an RTSP server port on bind and publishes the URL on
+  # `<out>/rtsp` (std_msgs/String). run_scenario.sh reads that topic and
+  # passes the URL to gst_recv.
+  - arg: { name: "device", default: "/dev/video10" }
+  - arg: { name: "width", default: "1280" }
+  - arg: { name: "height", default: "720" }
+  - arg: { name: "fps", default: "30" }
+  - arg: { name: "image_topic", default: "/bench/out_raw" }
+  - arg: { name: "rtsp_codec", default: "h264" }
+  - arg: { name: "rtsp_bitrate", default: "1000000" }
+
+  - node:
+      pkg: "usb_cam"
+      exec: "usb_cam_node_exe"
+      name: "usb_cam"
+      env:
+        - { name: "LD_PRELOAD", value: "$(find-pkg-prefix ros_camera_server_benchmarks)/lib/ros_camera_server_benchmarks/libv4l2loopback_timeperframe_shim.so" }
+      param:
+        - { name: "video_device", value: "$(var device)" }
+        - { name: "image_width",  value: "$(var width)" }
+        - { name: "image_height", value: "$(var height)" }
+        - { name: "framerate",    value: "$(var fps).0" }
+        - { name: "pixel_format", value: "yuyv2rgb" }
+      remap:
+        - { from: "/image_raw", to: "$(var image_topic)" }
+
+  # `republish raw rtsp_pub` subscribes to in:=image_topic and re-publishes
+  # via image_transport, which advertises the rtsp_pub plugin. The plugin
+  # spawns its own RTSP server. Plugin params live under `out.rtsp.*`
+  # (codec, target_bitrate, expected_framerate, etc.).
+  - node:
+      pkg: "image_transport"
+      exec: "republish"
+      name: "rtsp_republisher"
+      args: "raw rtsp_pub"
+      param:
+        - { name: "out.rtsp.codec", value: "$(var rtsp_codec)" }
+        - { name: "out.rtsp.target_bitrate", value: "$(var rtsp_bitrate)" }
+        - { name: "out.rtsp.expected_framerate", value: "$(var fps)" }
+      # Note: only `in` is remapped. The plugin's sub-topic `<out>/rtsp`
+      # (where the URL is published) is allocated by image_transport's
+      # internals and does NOT honour an `out` remap, so we leave it at the
+      # default `/out` and let run_scenario.sh read from `/out/rtsp`.
+      remap:
+        - { from: "in", to: "$(var image_topic)" }

@@ -1,0 +1,37 @@
++ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_ros_raw -p topic:=/bench/out_raw -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run10/cam-ros-rcs-mjpeg-decoded/ros_raw.csv -p warmup:=60 -p max_frames:=750
++ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video11 --width 1280 --height 720 --fps 30 --format mjpeg --duration 45 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run10/cam-ros-rcs-mjpeg-decoded/frame_gen_stats.csv --video ../input.robocup_crossing_ramps.mp4 --video-cycle-seconds 60
+frame_gen: first base-video frame ready after 1624.8 ms (cycle capacity = 1800 frames)
++ ros2 launch ros_camera_server_benchmarks rcs.launch.yaml config_path:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run10/cam-ros-rcs-mjpeg-decoded/rcs_config.yaml
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 420060 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run10/cam-ros-rcs-mjpeg-decoded/cpu.csv --interval-hz 2 --duration 15
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-20-28-17-648133-Stefan-TP-Ubuntu24-420060
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [camera_server_standalone-1]: process started with pid [420081]
+[camera_server_standalone-1] [0m[INFO] [1778005697.788726820] [ros_camera_server]: Registered input type: openseekthermal[0m
+[camera_server_standalone-1] [0m[INFO] [1778005697.788749925] [ros_camera_server]: Registered input type: ros2[0m
+[camera_server_standalone-1] [0m[INFO] [1778005697.788752964] [ros_camera_server]: Registered input type: rtp[0m
+[camera_server_standalone-1] [0m[INFO] [1778005697.788754738] [ros_camera_server]: Registered input type: v4l2[0m
+[camera_server_standalone-1] [0m[INFO] [1778005697.805309578] [ros_camera_server]: Creating pipeline for camera: bench[0m
+[camera_server_standalone-1] [0m[INFO] [1778005697.809425155] [ros_camera_server]: Selected caps for device /dev/video11: image/jpeg, parsed=(boolean)true, width=(int)1280, height=(int)720, pixel-aspect-ratio=(fraction)1/1, framerate=(fraction)30/1[0m
+[camera_server_standalone-1] [0m[INFO] [1778005697.809856191] [ros_camera_server]: Registering 4 V4L2 control parameters for device /dev/video11[0m
+[camera_server_standalone-1] [0m[INFO] [1778005697.810001228] [ros_camera_server]: Camera 'bench' Pipeline Graph:
+[camera_server_standalone-1] └── [0] Source(v4l2)
+[camera_server_standalone-1]     └── [1] Decode(jpeg)
+[camera_server_standalone-1]         └── [2] Output1(ros2)
+[camera_server_standalone-1] [0m
+[camera_server_standalone-1] [0m[INFO] [1778005697.850171085] [ros_camera_server]: SmartVideoDecoder: Initialized with VA[0m
+[camera_server_standalone-1] [33m[WARN] [1778005698.305202226] [ros_camera_server]: GStreamer log warning [v4l2] [bench:0 node=0]: VIDIOC_CROPCAP failed[0m
+[camera_server_standalone-1] [33m[WARN] [1778005698.305223008] [ros_camera_server]: GStreamer log warning [v4l2src] [bench:0 node=0]: lost frames detected: count = 21 - ts: 0:00:00.027319418[0m
+[camera_server_standalone-1] [0m[INFO] [1778005707.805225929] [ros_camera_server]: Camera Server Status:
+[camera_server_standalone-1] - bench
+[camera_server_standalone-1]     state: PLAYING
+[camera_server_standalone-1]     input fps: 30.5
+[camera_server_standalone-1]     outputs:
+[camera_server_standalone-1]       - Output 1 (ros2, raw@1280x720):
+[camera_server_standalone-1]         status: active
+[camera_server_standalone-1]         fps: 30.6
+[camera_server_standalone-1]         processing time: 2.9ms
+[camera_server_standalone-1]         clients: 1
+[camera_server_standalone-1] [0m
+[run_scenario] cleanup
+[0m[INFO] [1778005712.350554241] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+ros_recv: seen=435 decoded=435 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run10/cam-ros-rcs-mjpeg-decoded/ros_raw.csv

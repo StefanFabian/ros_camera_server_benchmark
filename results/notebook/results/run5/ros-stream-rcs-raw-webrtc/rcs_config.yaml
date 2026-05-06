@@ -1,0 +1,25 @@
+robot: "bench"
+address: "127.0.0.1"
+signaling_port: 8443
+cameras:
+  bench:
+    name: "bench_ros_raw_webrtc"
+    input:
+      type: ros2
+      topic: "/bench/image_raw"
+      format: raw
+      # Input dimensions pinned so the encoder negotiates against fixed caps;
+      # without this, the va_postproc scaler (auto-inserted when the output
+      # has its own width/height) hits an integer-overflow during fixate
+      # before the first ROS message has set the source caps.
+      width: 1280
+      height: 720
+      framerate: "30/1"
+    # ros-stream-rcs-raw-webrtc: ROS raw input -> WebRTC H.264. No width/height on the
+    # output: we don't want a Scale node, just pass-through at input size.
+    outputs:
+      - type: webrtc
+        codec: h264
+        encoder: NV
+        framerate: "30/1"
+        bitrate: 1000

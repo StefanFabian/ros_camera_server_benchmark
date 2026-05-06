@@ -1,0 +1,35 @@
+launch:
+  # cam-stream-usb_cam+web_video_server-yuv-mjpeg: usb_cam YUYV -> ROS topic -> web_video_server MJPEG (HTTP).
+  # MJPEG is web_video_server's native default stream type, so this measures
+  # the "no extra encoder config" baseline.
+  # Receiver fetches at:
+  #   http://127.0.0.1:8888/stream?topic=/bench/out_raw&type=mjpeg
+  - arg: { name: "device", default: "/dev/video10" }
+  - arg: { name: "width", default: "1280" }
+  - arg: { name: "height", default: "720" }
+  - arg: { name: "fps", default: "30" }
+  - arg: { name: "image_topic", default: "/bench/out_raw" }
+  - arg: { name: "wvs_port", default: "8888" }
+
+  - node:
+      pkg: "usb_cam"
+      exec: "usb_cam_node_exe"
+      name: "usb_cam"
+      env:
+        - { name: "LD_PRELOAD", value: "$(find-pkg-prefix ros_camera_server_benchmarks)/lib/ros_camera_server_benchmarks/libv4l2loopback_timeperframe_shim.so" }
+      param:
+        - { name: "video_device", value: "$(var device)" }
+        - { name: "image_width",  value: "$(var width)" }
+        - { name: "image_height", value: "$(var height)" }
+        - { name: "framerate",    value: "$(var fps).0" }
+        - { name: "pixel_format", value: "yuyv2rgb" }
+      remap:
+        - { from: "/image_raw", to: "$(var image_topic)" }
+
+  - node:
+      pkg: "web_video_server"
+      exec: "web_video_server"
+      name: "web_video_server"
+      param:
+        - { name: "port", value: "$(var wvs_port)" }
+        - { name: "default_stream_type", value: "mjpeg" }

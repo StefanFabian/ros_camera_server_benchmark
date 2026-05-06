@@ -1,0 +1,24 @@
+robot: "bench"
+address: "127.0.0.1"
+cameras:
+  bench:
+    name: "bench_v4l2_mjpeg_decoded"
+    input:
+      type: v4l2
+      device: "/dev/video11"
+      width: 1280
+      height: 720
+      framerate: "30/1"
+    # cam-ros-rcs-mjpeg-decoded: ros_camera_server reads MJPEG from V4L2 and
+    # decodes to rgb8 on the ros2 output (codec: raw + format: rgb8 inserts
+    # the JPEG decoder). Symmetric to cam-ros-usb_cam-mjpeg /
+    # cam-ros-gscam-mjpeg, which decode inside the camera driver and publish
+    # rgb8 — without this arm the existing cam-ros-rcs-mjpeg (passthrough
+    # CompressedImage) would be rcs-doing-less-work, not a like-for-like
+    # compare.
+    outputs:
+      - type: ros2
+        topic: "/bench/out_raw"
+        frame_id: "bench"
+        codec: raw
+        format: "rgb8"

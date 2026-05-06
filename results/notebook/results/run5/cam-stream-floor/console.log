@@ -1,0 +1,7 @@
++ ros2 run ros_camera_server_benchmarks gst_recv --mode udp-rtp --uri udp://127.0.0.1:7100 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/cam-stream-floor/stream.csv --warmup-frames 60 --max-frames 750
++ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video10 --width 1280 --height 720 --fps 30 --format yuyv --duration 45 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/cam-stream-floor/frame_gen_stats.csv --video ../input.robocup_crossing_ramps.mp4 --video-cycle-seconds 60
+frame_gen: first base-video frame ready after 1615.3 ms (cycle capacity = 1800 frames)
++ gst-launch-1.0 -q v4l2src device=/dev/video10 io-mode=mmap do-timestamp=true ! video/x-raw,format=YUY2,width=1280,height=720,framerate=30/1 ! videoconvert ! video/x-raw,format=NV12 ! nvh264enc preset=4 bitrate=1000 gop-size=10 strict-gop=true rc-mode=3 min-force-key-unit-interval=1000000000 spatial-aq=true zerolatency=true aud=true ! rtph264pay aggregate-mode=0 mtu=1300 config-interval=-1 ! udpsink host=127.0.0.1 port=7100 sync=false async=false
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 296056 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/cam-stream-floor/cpu.csv --interval-hz 2 --duration 15
+[run_scenario] cleanup
+gst_recv[udp-rtp]: seen=405 decoded=405 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/cam-stream-floor/stream.csv

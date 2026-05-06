@@ -1,0 +1,25 @@
+robot: "bench"
+address: "127.0.0.1"
+cameras:
+  bench:
+    name: "bench_v4l2_mjpeg"
+    input:
+      type: v4l2
+      device: "/dev/video11"
+      width: 1280
+      height: 720
+      framerate: "30/1"
+    outputs:
+      - type: ros2
+        topic: "/bench/out_compressed"
+        frame_id: "bench"
+        codec: compressed
+      - type: rtp
+        codec: h264
+        encoder: NV
+        framerate: "30/1"
+        host: "127.0.0.1"
+        port: 7100
+        bitrate: 1000
+        width: 1280
+        height: 720

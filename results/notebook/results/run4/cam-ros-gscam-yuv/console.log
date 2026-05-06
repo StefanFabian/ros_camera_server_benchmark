@@ -1,0 +1,21 @@
++ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_ros_raw -p topic:=/bench/out_raw -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/cam-ros-gscam-yuv/ros_raw.csv -p warmup:=60 -p max_frames:=750
++ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video10 --width 1280 --height 720 --fps 30 --format yuyv --duration 45 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/cam-ros-gscam-yuv/frame_gen_stats.csv --video ../input.robocup_crossing_ramps.mp4 --video-cycle-seconds 60
+frame_gen: first base-video frame ready after 1621.0 ms (cycle capacity = 1800 frames)
++ ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw width:=1280 height:=720 fps:=30
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 269112 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/cam-ros-gscam-yuv/cpu.csv --interval-hz 2 --duration 15
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-19-23-20-627282-Stefan-TP-Ubuntu24-269112
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gscam_node-1]: process started with pid [269120]
+[gscam_node-1] [0m[INFO] [1778001800.760255615] [gscam]: Using gstreamer config from rosparam: "v4l2src device=/dev/video10 ! video/x-raw,format=YUY2,width=1280,height=720,framerate=30/1 ! videoconvert"[0m
+[gscam_node-1] [0m[INFO] [1778001800.760518490] [gscam]: using default calibration URL[0m
+[gscam_node-1] [0m[INFO] [1778001800.760540579] [gscam]: camera calibration URL: file:///home/stefan/.ros/camera_info/camera.yaml[0m
+[gscam_node-1] [31m[ERROR] [1778001800.760586398] [camera_calibration_parsers]: Unable to open camera calibration file [/home/stefan/.ros/camera_info/camera.yaml][0m
+[gscam_node-1] [33m[WARN] [1778001800.760625261] [gscam]: Camera calibration file /home/stefan/.ros/camera_info/camera.yaml not found[0m
+[gscam_node-1] [0m[INFO] [1778001800.760637914] [gscam]: Loaded camera calibration from [0m
+[gscam_node-1] [0m[INFO] [1778001800.778350412] [gscam]: Time offset: 1777995426.039063[0m
+[gscam_node-1] [0m[INFO] [1778001800.861314490] [gscam]: [/camera/image_raw] new RTSP session at rtsp://192.168.238.101:38293/[0m
+[gscam_node-1] [0m[INFO] [1778001800.867016714] [gscam]: Publishing stream...[0m
+[gscam_node-1] [0m[INFO] [1778001800.867393283] [gscam]: Started stream.[0m
+[run_scenario] cleanup
+[0m[INFO] [1778001815.329354316] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+ros_recv: seen=435 decoded=435 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/cam-ros-gscam-yuv/ros_raw.csv

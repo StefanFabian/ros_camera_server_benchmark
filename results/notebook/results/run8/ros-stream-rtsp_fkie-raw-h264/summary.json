@@ -1,0 +1,101 @@
+{
+  "scenario": "ros-stream-rtsp_fkie-raw-h264",
+  "duration_s": 15,
+  "warmup_frames": 60,
+  "expected_after_warmup": 390,
+  "stream": {
+    "count": 384,
+    "expected": 390,
+    "frame_loss": 0.01538461538461533,
+    "fps_effective": 30.000575634282548,
+    "mean_ms": 4.983621421334512,
+    "stddev_ms": 0.6433557035217542,
+    "p50_ms": 4.870491913522013,
+    "p95_ms": 5.464042213522012,
+    "p99_ms": 7.549153983522013,
+    "max_ms": 11.719985413522013,
+    "p50_ms_raw": 7.1724955,
+    "p95_ms_raw": 7.7660458,
+    "p99_ms_raw": 9.85115757,
+    "mean_ms_raw": 7.2856250078124996,
+    "max_ms_raw": 14.021989,
+    "producer_encode_mean_ms": 2.3020035864779875,
+    "first_id": 252,
+    "last_id": 635,
+    "gap_count": 0,
+    "seen": 444,
+    "decoded": 444,
+    "decoded_ratio": 1.0
+  },
+  "ros_raw": {
+    "count": 0,
+    "expected": 390,
+    "frame_loss": null,
+    "fps_effective": null,
+    "mean_ms": null,
+    "stddev_ms": null,
+    "p50_ms": null,
+    "p95_ms": null,
+    "p99_ms": null,
+    "max_ms": null,
+    "p50_ms_raw": null,
+    "p95_ms_raw": null,
+    "p99_ms_raw": null,
+    "mean_ms_raw": null,
+    "max_ms_raw": null,
+    "producer_encode_mean_ms": 2.3020035864779875,
+    "first_id": null,
+    "last_id": null,
+    "gap_count": null,
+    "seen": null,
+    "decoded": null,
+    "decoded_ratio": null
+  },
+  "ros_jpeg": {
+    "count": 0,
+    "expected": 390,
+    "frame_loss": null,
+    "fps_effective": null,
+    "mean_ms": null,
+    "stddev_ms": null,
+    "p50_ms": null,
+    "p95_ms": null,
+    "p99_ms": null,
+    "max_ms": null,
+    "p50_ms_raw": null,
+    "p95_ms_raw": null,
+    "p99_ms_raw": null,
+    "mean_ms_raw": null,
+    "max_ms_raw": null,
+    "producer_encode_mean_ms": 2.3020035864779875,
+    "first_id": null,
+    "last_id": null,
+    "gap_count": null,
+    "seen": null,
+    "decoded": null,
+    "decoded_ratio": null
+  },
+  "cpu_stack": {
+    "ros2": {
+      "mean_pct": 0.0,
+      "p95_pct": 0.0,
+      "n": 26
+    },
+    "republish": {
+      "mean_pct": 5.769230769230769,
+      "p95_pct": 8.0,
+      "n": 26
+    },
+    "_total": {
+      "mean_pct": 5.769230769230769,
+      "p95_pct": 8.0,
+      "n": 26
+    }
+  },
+  "producer": {
+    "frames_produced": 636,
+    "encode_count": 636,
+    "encode_total_ns": 1464074281,
+    "encode_max_ns": 6520263
+  }
+}

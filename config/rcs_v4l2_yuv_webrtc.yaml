@@ -1,0 +1,22 @@
+robot: "bench"
+address: "127.0.0.1"
+signaling_port: 8443
+cameras:
+  bench:
+    name: "bench_v4l2_yuv_webrtc"
+    input:
+      type: v4l2
+      device: "/dev/video10"
+      width: 1280
+      height: 720
+      framerate: "30/1"
+    # cam-stream-rcs-yuv-webrtc: WebRTC output only. No width/height — we don't want a
+    # Scale node, just pass-through at input resolution.
+    # webrtc_recv connects to ws://127.0.0.1:8443/bench/0
+    # (camera_id `bench`, output index 0).
+    outputs:
+      - type: webrtc
+        codec: h264
+        encoder: ${BENCH_RCS_ENC}
+        framerate: "30/1"
+        bitrate: 1000

@@ -1,0 +1,22 @@
+launch:
+  # RTSP receiver for the G*-rtsp-h264 arms. FKIE's rtsp_image_transport
+  # ships both rtsp_pub (server) and rtsp_sub (client). Standard RTSP
+  # clients (ffprobe, gst rtspsrc) cannot complete SETUP/PLAY against
+  # rtsp_pub, so we use rtsp_sub via `image_transport republish` and have
+  # ros_recv subscribe to the republished raw topic.
+  #
+  # rtsp_sub auto-discovers the URL by subscribing to `<in>/rtsp`
+  # (the same topic rtsp_pub announces it on), so no URL plumbing is
+  # needed on the launch side. The base topic `/out` matches what
+  # rtsp_h264_*.launch.yaml leaves at default.
+  - arg: { name: "in_base", default: "/out" }
+  - arg: { name: "out_topic", default: "/bench/rtsp_recv_image" }
+
+  - node:
+      pkg: "image_transport"
+      exec: "republish"
+      name: "rtsp_subscriber"
+      args: "rtsp raw"
+      remap:
+        - { from: "in", to: "$(var in_base)" }
+        - { from: "out", to: "$(var out_topic)" }

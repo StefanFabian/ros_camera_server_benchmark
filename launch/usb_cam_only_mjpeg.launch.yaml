@@ -1,0 +1,27 @@
+launch:
+  # cam-ros-usb_cam-mjpeg: usb_cam MJPEG (decoded internally to rgb8) -> ROS topic only.
+  # The MJPEG decode happens inside usb_cam (pixel_format=mjpeg2rgb), so
+  # what reaches the topic is rgb8 — same as cam-ros-usb_cam-yuv from the
+  # receiver's perspective, but the camera path includes the on-device
+  # JPEG step.
+  - arg: { name: "device", default: "/dev/video11" }
+  - arg: { name: "width", default: "1280" }
+  - arg: { name: "height", default: "720" }
+  - arg: { name: "fps", default: "30" }
+  - arg: { name: "image_topic", default: "/bench/out_raw" }
+
+  - node:
+      pkg: "usb_cam"
+      exec: "usb_cam_node_exe"
+      name: "usb_cam"
+      env:
+        - { name: "LD_PRELOAD", value: "$(find-pkg-prefix ros_camera_server_benchmarks)/lib/ros_camera_server_benchmarks/libv4l2loopback_timeperframe_shim.so" }
+      param:
+        - { name: "video_device", value: "$(var device)" }
+        - { name: "image_width",  value: "$(var width)" }
+        - { name: "image_height", value: "$(var height)" }
+        - { name: "framerate",    value: "$(var fps).0" }
+        - { name: "pixel_format", value: "mjpeg2rgb" }
+        - { name: "output_encoding", value: "rgb8" }
+      remap:
+        - { from: "/image_raw", to: "$(var image_topic)" }

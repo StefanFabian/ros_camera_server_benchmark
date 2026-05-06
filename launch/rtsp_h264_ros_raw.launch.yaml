@@ -1,0 +1,22 @@
+launch:
+  # ros-stream-rtsp_fkie-raw-h264: ros_pub raw input -> image_transport republish rtsp_pub.
+  # See rtsp_h264_yuv.launch.yaml for the rtsp_pub setup; this variant skips
+  # the camera node since ros_pub publishes the topic directly.
+  - arg: { name: "image_topic", default: "/bench/image_raw" }
+  - arg: { name: "rtsp_codec", default: "h264" }
+  - arg: { name: "rtsp_bitrate", default: "1000000" }
+  - arg: { name: "fps", default: "30" }
+
+  - node:
+      pkg: "image_transport"
+      exec: "republish"
+      name: "rtsp_republisher"
+      args: "raw rtsp_pub"
+      param:
+        - { name: "out.rtsp.codec", value: "$(var rtsp_codec)" }
+        - { name: "out.rtsp.target_bitrate", value: "$(var rtsp_bitrate)" }
+        - { name: "out.rtsp.expected_framerate", value: "$(var fps)" }
+      # See rtsp_h264_yuv.launch.yaml: `out` remap is intentionally absent
+      # because image_transport's plugin sub-topic `/out/rtsp` ignores it.
+      remap:
+        - { from: "in", to: "$(var image_topic)" }

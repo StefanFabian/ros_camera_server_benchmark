@@ -1,0 +1,12 @@
++ ros2 run ros_camera_server_benchmarks gst_recv --mode udp-rtp --uri udp://127.0.0.1:7100 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run9/ros-stream-gst_bridge-raw-rtp/stream.csv --warmup-frames 60 --max-frames 750
++ ros2 run ros_camera_server_benchmarks ros_pub --ros-args -p kind:=raw -p topic:=/bench/image_raw -p width:=1280 -p height:=720 -p fps:=30 -p encode_stats:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run9/ros-stream-gst_bridge-raw-rtp/ros_pub_stats.csv -p video:=../input.robocup_crossing_ramps.mp4 -p video_cycle_seconds:=60
+[0m[INFO] [1778005384.668431894] [ros_pub]: base video first frame ready, cycle capacity 1800[0m
++ gst-launch-1.0 -q rosimagesrc name=ros_src ros-topic=/bench/image_raw ! video/x-raw,framerate=30/1 ! videoconvert ! video/x-raw,format=NV12 ! nvh264enc preset=4 bitrate=1000 gop-size=10 strict-gop=true rc-mode=3 min-force-key-unit-interval=1000000000 spatial-aq=true zerolatency=true aud=true ! rtph264pay aggregate-mode=0 mtu=1300 config-interval=-1 ! udpsink host=127.0.0.1 port=7100 sync=false async=false
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 407878 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run9/ros-stream-gst_bridge-raw-rtp/cpu.csv --interval-hz 2 --duration 15
+[0m[INFO] [1778005386.460605918] [gst_image_src_node]: getcaps with filter 'NULL'[0m
+[0m[INFO] [1778005386.460660783] [gst_image_src_node]: waiting for first message[0m
+[0m[INFO] [1778005386.460664099] [gst_image_src_node]: stream_start at 1778005386460663390[0m
+[0m[INFO] [1778005386.475603920] [gst_image_src_node]: preparing video with caps 'video/x-raw, format=(string)RGB, height=(int)720, width=(int)1280, framerate=(fraction)30/1, interlace-mode=(string)progressive'[0m
+[run_scenario] cleanup
+[0m[INFO] [1778005399.916328097] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+gst_recv[udp-rtp]: seen=404 decoded=404 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run9/ros-stream-gst_bridge-raw-rtp/stream.csv
