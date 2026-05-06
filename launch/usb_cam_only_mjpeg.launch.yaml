@@ -4,7 +4,7 @@ launch:
   # what reaches the topic is rgb8 — same as cam-ros-usb_cam-yuv from the
   # receiver's perspective, but the camera path includes the on-device
   # JPEG step.
-  - arg: { name: "device", default: "/dev/video11" }
+  - arg: { name: "device", default: "/dev/video41" }
   - arg: { name: "width", default: "1280" }
   - arg: { name: "height", default: "720" }
   - arg: { name: "fps", default: "30" }

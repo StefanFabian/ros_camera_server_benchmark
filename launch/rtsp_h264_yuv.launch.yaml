@@ -4,7 +4,7 @@ launch:
   # auto-allocates an RTSP server port on bind and publishes the URL on
   # `<out>/rtsp` (std_msgs/String). run_scenario.sh reads that topic and
   # passes the URL to gst_recv.
-  - arg: { name: "device", default: "/dev/video10" }
+  - arg: { name: "device", default: "/dev/video40" }
   - arg: { name: "width", default: "1280" }
   - arg: { name: "height", default: "720" }
   - arg: { name: "fps", default: "30" }

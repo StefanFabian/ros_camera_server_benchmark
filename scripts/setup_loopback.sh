@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Idempotent setup of v4l2loopback devices /dev/video10 (YUYV) and /dev/video11 (MJPEG).
+# Idempotent setup of v4l2loopback devices /dev/video40 (YUYV) and /dev/video41 (MJPEG).
 # Run once per host before running the benchmark suite. Requires sudo.
 set -euo pipefail
 
@@ -25,11 +25,11 @@ sudo modprobe -r v4l2loopback 2>/dev/null || true
 # scenario; exclusive_caps=0 sidesteps that. usb_cam / gscam /
 # ros_camera_server all accept the resulting bidirectional caps without
 # complaint.
-sudo modprobe v4l2loopback video_nr=10,11 \
+sudo modprobe v4l2loopback video_nr=40,41 \
      exclusive_caps=0,0 \
      max_buffers=8 \
      card_label="bench_yuyv,bench_mjpeg"
 
-v4l2-ctl --device=/dev/video10 --info | head -3
-v4l2-ctl --device=/dev/video11 --info | head -3
+v4l2-ctl --device=/dev/video40 --info | head -3
+v4l2-ctl --device=/dev/video41 --info | head -3
 echo "OK"

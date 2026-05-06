@@ -1,6 +1,6 @@
 launch:
   # cam-ros-gscam-yuv: gscam YUY2 -> rgb8 ROS topic only.
-  - arg: { name: "device", default: "/dev/video10" }
+  - arg: { name: "device", default: "/dev/video40" }
   - arg: { name: "image_topic", default: "/bench/out_raw" }
   - arg: { name: "width", default: "1280" }
   - arg: { name: "height", default: "720" }

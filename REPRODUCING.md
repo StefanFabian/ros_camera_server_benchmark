@@ -80,7 +80,7 @@ source install/setup.bash
 
 ### v4l2loopback devices
 
-`/dev/video10` (YUYV) + `/dev/video11` (MJPEG):
+`/dev/video40` (YUYV) + `/dev/video41` (MJPEG):
 
 ```bash
 sudo ./setup_loopback.sh

@@ -1,6 +1,6 @@
 launch:
   # cam-ros-gscam-mjpeg: gscam MJPEG (jpegdec internally) -> rgb8 ROS topic only.
-  - arg: { name: "device", default: "/dev/video11" }
+  - arg: { name: "device", default: "/dev/video41" }
   - arg: { name: "image_topic", default: "/bench/out_raw" }
   - arg: { name: "width", default: "1280" }
   - arg: { name: "height", default: "720" }

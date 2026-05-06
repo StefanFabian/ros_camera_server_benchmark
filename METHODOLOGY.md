@@ -139,7 +139,7 @@ tokenization rules for `executable.cmd`.
 **Floor (`cam-stream-floor`)** — `start_floor_pipeline`:
 
 ```text
-v4l2src device=/dev/video10 io-mode=mmap do-timestamp=true
+v4l2src device=/dev/video40 io-mode=mmap do-timestamp=true
   ! video/x-raw,format=YUY2,width=1280,height=720,framerate=30/1
   ! videoconvert ! video/x-raw,format=NV12
   ! vah264lpenc bitrate=1000 key-int-max=10 aud=true

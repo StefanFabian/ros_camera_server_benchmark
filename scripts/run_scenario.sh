@@ -266,7 +266,7 @@ start_rcs() {  # config_filename
 # floor is bare encode + RTP payload + decode.
 start_floor_pipeline() {
   start_bg gst-launch-1.0 -q \
-    v4l2src device=/dev/video10 io-mode=mmap do-timestamp=true ! \
+    v4l2src device=/dev/video40 io-mode=mmap do-timestamp=true ! \
     "video/x-raw,format=YUY2,width=${WIDTH},height=${HEIGHT},framerate=${FPS}/1" ! \
     videoconvert ! video/x-raw,format=NV12 ! \
     ${BENCH_ENC_GST} ! \
@@ -329,10 +329,10 @@ SCENARIO_TABLE=(
   "cam-ros-rcs-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_rcs rcs_v4l2_yuv_rosonly.yaml|"
   "cam-ros-rcs-mjpeg|start_ros_recv_jpeg ${RCS_JPEG_TOPIC}|framegen-mjpeg|start_rcs rcs_v4l2_mjpeg_rosonly.yaml|"
   "cam-ros-rcs-mjpeg-decoded|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_rcs rcs_v4l2_mjpeg_decoded.yaml|"
-  "cam-ros-usb_cam-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=\${FPS}|"
-  "cam-ros-usb_cam-mjpeg|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video11 image_topic:=/bench/out_raw fps:=\${FPS}|"
-  "cam-ros-gscam-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}|"
-  "cam-ros-gscam-mjpeg|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_mjpeg.launch.yaml device:=/dev/video11 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}|"
+  "cam-ros-usb_cam-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS}|"
+  "cam-ros-usb_cam-mjpeg|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw fps:=\${FPS}|"
+  "cam-ros-gscam-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}|"
+  "cam-ros-gscam-mjpeg|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}|"
 
   # --- cam-stream: Camera -> stream only ---
   # cam-stream-floor: stack-less encode -> UDP-RTP -> decode reference. No
@@ -345,12 +345,12 @@ SCENARIO_TABLE=(
   # socket; ros-stream webrtc scenarios use the same post-stack ordering.
   # Receiver-first ordering races the WS server bring-up and exhausts retries.
   "cam-stream-rcs-yuv-webrtc||framegen-yuyv|start_rcs rcs_v4l2_yuv_webrtc.yaml|sleep 3;start_webrtc_recv \${WS_BENCH0}"
-  "cam-stream-usb_cam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
-  "cam-stream-gscam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-stream-usb_cam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-stream-gscam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
   # web_video_server boots an HTTP server; gst_recv is started after a 5 s
   # settling window so the first request hits a server already serving frames.
-  "cam-stream-usb_cam+web_video_server-yuv-mjpeg||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=\${FPS} wvs_port:=\${WVS_PORT}|sleep 5;start_gst_recv http-mjpeg \${WVS_MJPEG_URL}"
-  "cam-stream-usb_cam+rtsp_fkie-yuv-h264||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
+  "cam-stream-usb_cam+web_video_server-yuv-mjpeg||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} wvs_port:=\${WVS_PORT}|sleep 5;start_gst_recv http-mjpeg \${WVS_MJPEG_URL}"
+  "cam-stream-usb_cam+rtsp_fkie-yuv-h264||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
 
   # --- ros-stream: ROS img -> stream only ---
   "ros-stream-rcs-raw-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|rospub-raw|start_rcs rcs_ros_raw.yaml|"
@@ -367,11 +367,11 @@ SCENARIO_TABLE=(
   "cam-both-rcs-mjpeg-decoded-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_rcs rcs_v4l2_mjpeg_decoded_rtp.yaml|"
   # webrtc index is 1 in rcs_v4l2_yuv_both_webrtc.yaml (ros2 is index 0).
   "cam-both-rcs-yuv-webrtc|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_rcs rcs_v4l2_yuv_both_webrtc.yaml|sleep 3;start_webrtc_recv \${WS_BENCH1}"
-  "cam-both-usb_cam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
-  "cam-both-gscam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
-  "cam-both-usb_cam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video11 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
-  "cam-both-gscam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_mjpeg.launch.yaml device:=/dev/video11 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
-  "cam-both-usb_cam+rtsp_fkie-yuv-h264|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
+  "cam-both-usb_cam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-both-gscam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-both-usb_cam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-both-gscam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-both-usb_cam+rtsp_fkie-yuv-h264|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
 )
 
 # Find the row for the requested scenario.
@@ -412,8 +412,8 @@ run_actions "${PRE_RECVS}"
 
 # ---- 2. producer ----
 case "${PRODUCER}" in
-  framegen-yuyv)   start_frame_gen yuyv /dev/video10 ;;
-  framegen-mjpeg)  start_frame_gen mjpeg /dev/video11 ;;
+  framegen-yuyv)   start_frame_gen yuyv /dev/video40 ;;
+  framegen-mjpeg)  start_frame_gen mjpeg /dev/video41 ;;
   rospub-raw)      start_ros_pub raw /bench/image_raw ;;
   # ros_camera_server's ros2 input auto-appends /compressed for jpeg/png
   # (image_transport convention), so the producer must publish to the same

@@ -5,7 +5,7 @@ cameras:
     name: "bench_v4l2_yuv_rosonly"
     input:
       type: v4l2
-      device: "/dev/video10"
+      device: "/dev/video40"
       width: 1280
       height: 720
       framerate: "30/1"

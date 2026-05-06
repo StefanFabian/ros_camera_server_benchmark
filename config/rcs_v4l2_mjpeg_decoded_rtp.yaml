@@ -5,7 +5,7 @@ cameras:
     name: "bench_v4l2_mjpeg_decoded_rtp"
     input:
       type: v4l2
-      device: "/dev/video11"
+      device: "/dev/video41"
       width: 1280
       height: 720
       framerate: "30/1"

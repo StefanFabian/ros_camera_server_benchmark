@@ -4,7 +4,7 @@ launch:
   # the "no extra encoder config" baseline.
   # Receiver fetches at:
   #   http://127.0.0.1:8888/stream?topic=/bench/out_raw&type=mjpeg
-  - arg: { name: "device", default: "/dev/video10" }
+  - arg: { name: "device", default: "/dev/video40" }
   - arg: { name: "width", default: "1280" }
   - arg: { name: "height", default: "720" }
   - arg: { name: "fps", default: "30" }

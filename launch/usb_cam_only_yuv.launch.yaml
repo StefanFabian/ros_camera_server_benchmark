@@ -1,7 +1,7 @@
 launch:
   # cam-ros-usb_cam-yuv: usb_cam YUYV -> rgb8 ROS topic only. No bridge / no encoder;
   # ros_recv subscribes to image_topic and stamps recv at message arrival.
-  - arg: { name: "device", default: "/dev/video10" }
+  - arg: { name: "device", default: "/dev/video40" }
   - arg: { name: "width", default: "1280" }
   - arg: { name: "height", default: "720" }
   - arg: { name: "fps", default: "30" }
