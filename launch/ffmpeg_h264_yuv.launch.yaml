@@ -1,0 +1,72 @@
+launch:
+  # cam-stream-usb_cam+ffmpeg_transport-yuv-h264 /
+  # cam-both-usb_cam+ffmpeg_transport-yuv-h264:
+  # usb_cam YUYV -> rgb8, ffmpeg encoded directly via image_transport on
+  # `<image_topic>/ffmpeg`. usb_cam uses image_transport::CameraPublisher,
+  # which auto-loads every installed publisher plugin on the base topic, so
+  # the ffmpeg_image_transport publisher is wired in without a producer-side
+  # `image_transport republish raw ffmpeg` hop. ffmpeg_recv.launch.yaml then
+  # reverses the encode for the receive path.
+  #
+  # ros-stream-ffmpeg_transport-raw-h264 has no camera node, but ros_pub
+  # itself publishes raw via image_transport (see src/ros_pub.cpp + the
+  # rospub-raw-ffmpeg_transport producer in run_scenario.sh) so the ffmpeg
+  # plugin loads in-process there too. Both paths reflect realistic
+  # application usage — no synthetic republisher hop on the producer side.
+  - arg: { name: "device", default: "/dev/video40" }
+  - arg: { name: "width", default: "1280" }
+  - arg: { name: "height", default: "720" }
+  - arg: { name: "fps", default: "30" }
+  - arg: { name: "image_topic", default: "/bench/out_raw" }
+  # Defaults track env_fairness.sh's BENCH_FFMPEG_ENC mapping. Caller passes
+  # the resolved encoder/bit_rate from run_scenario.sh.
+  - arg: { name: "ffmpeg_encoder", default: "libx264" }
+  - arg: { name: "ffmpeg_bitrate", default: "1000000" }
+  - arg: { name: "ffmpeg_gop", default: "10" }
+  # encoder_av_options is per-encoder low-latency tuning (preset/tune/etc).
+  # Run scenarios pass BENCH_FFMPEG_AV_OPTS from env_fairness.sh.
+  - arg: { name: "ffmpeg_av_options", default: "" }
+
+  - node:
+      pkg: "usb_cam"
+      exec: "usb_cam_node_exe"
+      name: "usb_cam"
+      env:
+        # usb_cam needs v4l2loopback_timeperframe_shim to satisfy its
+        # V4L2_CAP_TIMEPERFRAME probe; vaapi_drm_redirect_shim pins the
+        # libav VAAPI encoder to the working render node (consumed by the
+        # ffmpeg plugin running in-process now). vaapi shim is a no-op when
+        # BENCH_VAAPI_DRM_DEVICE is unset.
+        - { name: "LD_PRELOAD", value: "$(find-pkg-prefix ros_camera_server_benchmarks)/lib/ros_camera_server_benchmarks/libv4l2loopback_timeperframe_shim.so:$(find-pkg-prefix ros_camera_server_benchmarks)/lib/ros_camera_server_benchmarks/libvaapi_drm_redirect_shim.so" }
+      # ffmpeg_image_transport derives its parameter namespace from the
+      # unremapped base topic (image_transport calls
+      # rclcpp::expand_topic_or_service_name, which expands relative-to-ns
+      # but does NOT apply ros2 remappings). usb_cam's CameraPublisher
+      # always advertises on the literal "image_raw", so the plugin params
+      # live under `image_raw.ffmpeg.*` even when the published topic is
+      # remapped to `/bench/out_raw`.
+      #
+      # bit_rate / gop_size / max_b_frames are strict-int params on the
+      # plugin side: passing "$(var ...)" yields a string and rclcpp
+      # rejects it with InvalidParameterTypeException. Wrap with eval()
+      # so YAML emits real ints.
+      param:
+        - { name: "video_device", value: "$(var device)" }
+        - { name: "image_width",  value: "$(var width)" }
+        - { name: "image_height", value: "$(var height)" }
+        - { name: "framerate",    value: "$(var fps).0" }
+        - { name: "pixel_format", value: "yuyv2rgb" }
+        - { name: "image_raw.ffmpeg.encoder", value: "$(var ffmpeg_encoder)" }
+        - { name: "image_raw.ffmpeg.bit_rate", value: $(eval '$(var ffmpeg_bitrate)') }
+        - { name: "image_raw.ffmpeg.gop_size", value: $(eval '$(var ffmpeg_gop)') }
+        - { name: "image_raw.ffmpeg.max_b_frames", value: 0 }
+        - { name: "image_raw.ffmpeg.encoder_av_options", value: "$(var ffmpeg_av_options)" }
+      # ROS 2 remappings are exact-match per topic, so `/image_raw -> ...`
+      # does NOT also remap `/image_raw/ffmpeg` (or any other transport
+      # subtopic). Without an explicit subtopic remap usb_cam ends up
+      # publishing the encoded stream on `/image_raw/ffmpeg` while the
+      # receiver subscribes to `<image_topic>/ffmpeg` — they never match
+      # and the encoder stays uninitialised (no subscribers detected).
+      remap:
+        - { from: "/image_raw", to: "$(var image_topic)" }
+        - { from: "/image_raw/ffmpeg", to: "$(var image_topic)/ffmpeg" }

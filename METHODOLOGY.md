@@ -103,11 +103,35 @@ non-H.264 stacks emit what they support natively:
   `rtsp_pub` also gates encoding on having a raw-transport subscriber,
   so `run_scenario.sh` keeps a `ros2 topic hz /out` alive for the
   duration of the scenario.
+- **`ffmpeg_image_transport`**: H.264 over a ROS topic via
+  `image_transport/ffmpeg_pub` (libav encode →
+  `ffmpeg_image_transport_msgs/FFMPEGPacket`). The publisher plugin
+  loads in-process on both producer flavours: cam-* arms get it inside
+  `usb_cam`'s `image_transport::CameraPublisher`;
+  ros-stream-ffmpeg_transport gets it inside `ros_pub`, which publishes raw through
+  `image_transport::Publisher` for exactly this reason. Either way
+  encoded packets land on `<image_topic>/ffmpeg` with no producer-side
+  republisher — matching how a real application would publish ffmpeg
+  frames. Receiver side runs `image_transport republish ffmpeg raw`
+  and `ros_recv` subscribes to the republished raw topic. The libav
+  encoder is `BENCH_FFMPEG_ENC` (`h264_vaapi` / `h264_nvenc` /
+  `h264_rkmpp`) so the same `--encoder=va|nv|mpp` selection that pins
+  GStreamer encoders also pins the libav backend. Encoder side is
+  pinned at the low-latency operating point via `BENCH_FFMPEG_AV_OPTS`
+  (per-encoder zerolatency / no-B-frame settings, mirror of the
+  GStreamer encoder knobs in env_fairness.sh). Decoder side is pinned
+  to libav's software `h264` decoder (`in.ffmpeg.decoders.h264=h264`):
+  the default-first hardware decoder `h264_cuvid` holds a multi-frame
+  DPB even with no B-frames in the stream, which raises p50 by ~190 ms
+  vs the software decoder. Pinning SW decode keeps the arm comparable
+  to every other low-latency stream stack. Like rtsp_fkie this adds
+  one extra ROS topic hop on the receive path; unlike rtsp_fkie no
+  URL-keepalive subscriber is needed (it's pure ROS topics).
 
 `gst_recv --mode` switches between UDP-RTP and HTTP-MJPEG transports;
 WebRTC has its own receiver (`webrtc_recv`) because it needs websocket
-signaling; RTSP arms have no `gst_recv` mode and use
-`image_transport republish rtsp raw` + `ros_recv` instead.
+signaling; RTSP and ffmpeg_image_transport arms have no `gst_recv` mode
+and use `image_transport republish <transport> raw` + `ros_recv` instead.
 
 No jitter buffer anywhere in the H.264 receive paths: the latency floor
 is bare encode + RTP payload + decode, with no application-level buffer

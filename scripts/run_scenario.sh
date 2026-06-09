@@ -66,6 +66,8 @@ case "${SCENARIO}" in
   cam-stream-gscam+gst_bridge-*|cam-both-gscam+gst_bridge-*)                              require_pkg gscam; require_pkg gst_bridge ;;
   cam-stream-usb_cam+web_video_server-*|ros-stream-web_video_server-*)                    require_pkg usb_cam; require_pkg web_video_server ;;
   cam-stream-usb_cam+rtsp_fkie-*|ros-stream-rtsp_fkie-*|cam-both-usb_cam+rtsp_fkie-*)     require_pkg usb_cam; require_pkg rtsp_image_transport ;;
+  cam-stream-usb_cam+ffmpeg_transport-*|cam-both-usb_cam+ffmpeg_transport-*)              require_pkg usb_cam; require_pkg ffmpeg_image_transport ;;
+  ros-stream-ffmpeg_transport-*)                                                          require_pkg ffmpeg_image_transport ;;
   *)                                                                                      echo "unknown scenario: ${SCENARIO}" >&2; exit 2 ;;
 esac
 
@@ -207,6 +209,31 @@ start_rtsp_stream_recv() {
     -p warmup:="${WARMUP}" -p max_frames:="${MAX_FRAMES}"
 }
 
+# ffmpeg_image_transport "stream receiver": `republish ffmpeg raw` decoder +
+# ros_recv writing to stream.csv. Used by cam-stream-usb_cam+ffmpeg_transport-yuv-h264,
+# ros-stream-ffmpeg_transport-raw-h264, cam-both-usb_cam+ffmpeg_transport-yuv-h264.
+# Simpler than start_rtsp_stream_recv because ffmpeg is pure ROS topics — no URL
+# keepalive / discovery handshake. Adds the same +1 ROS-topic hop on the
+# receive path as the rtsp_fkie arm; documented in METHODOLOGY.md.
+#
+# $1 is the encoder-side base topic the ffmpeg subscriber attaches to
+# (`<base>/ffmpeg`). For cam-* arms usb_cam owns the image_transport
+# publisher directly, so the base is the remapped /image_raw destination
+# (`/bench/out_raw`). For ros-stream-ffmpeg_transport-raw-h264 the ros_pub
+# producer publishes via image_transport on the configured topic
+# (`/bench/image_raw`).
+start_ffmpeg_stream_recv() {
+  local in_base="${1:-/out}"
+  start_bg ros2 launch ros_camera_server_benchmarks ffmpeg_recv.launch.yaml \
+    "in_base:=${in_base}" "out_topic:=/bench/ffmpeg_recv_image"
+  sleep 1
+  start_bg ros2 run ros_camera_server_benchmarks ros_recv --ros-args \
+    -r __node:=ros_recv_stream \
+    -p topic:=/bench/ffmpeg_recv_image -p kind:=raw \
+    -p csv:="${OUT}/stream.csv" \
+    -p warmup:="${WARMUP}" -p max_frames:="${MAX_FRAMES}"
+}
+
 # rbfimagesink publishes compressed images at "<topic>/compressed", not at
 # the base topic name (raw goes to base topic, jpeg gets the suffix appended
 # by image_transport convention). ros_camera_server's mjpeg config uses
@@ -245,6 +272,25 @@ start_ros_pub() {  # kind topic
   if [[ -n "${BENCH_VIDEO:-}" ]]; then
     args+=(-p video:="${BENCH_VIDEO}")
     [[ -n "${BENCH_VIDEO_CYCLE_S:-}" ]] && args+=(-p video_cycle_seconds:="${BENCH_VIDEO_CYCLE_S}")
+  fi
+  # ros_pub publishes raw via image_transport, so transport plugins (notably
+  # ffmpeg_image_transport) load directly into the producer process when the
+  # corresponding subtopic has a subscriber. ros-stream-ffmpeg sets the
+  # plugin params here on ros_pub itself; with no producer-side republisher
+  # in the chain, this matches how a real application would publish ffmpeg
+  # frames via image_transport. Param namespace mirrors the rule used for
+  # usb_cam (resolved-but-unremapped base topic, with leading `/` stripped
+  # and `/` replaced by `.`); ros_pub does not remap anything, so it's just
+  # the topic with leading slash removed.
+  if [[ -n "${BENCH_ROS_PUB_FFMPEG:-}" ]]; then
+    local prefix="${2#/}"; prefix="${prefix//\//.}"
+    args+=(
+      -p "${prefix}.ffmpeg.encoder:=${BENCH_FFMPEG_ENC}"
+      -p "${prefix}.ffmpeg.bit_rate:=$((BITRATE * 1000))"
+      -p "${prefix}.ffmpeg.gop_size:=10"
+      -p "${prefix}.ffmpeg.max_b_frames:=0"
+      -p "${prefix}.ffmpeg.encoder_av_options:=${BENCH_FFMPEG_AV_OPTS}"
+    )
   fi
   start_bg ros2 run ros_camera_server_benchmarks ros_pub "${args[@]}"
 }
@@ -351,6 +397,14 @@ SCENARIO_TABLE=(
   # settling window so the first request hits a server already serving frames.
   "cam-stream-usb_cam+web_video_server-yuv-mjpeg||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} wvs_port:=\${WVS_PORT}|sleep 5;start_gst_recv http-mjpeg \${WVS_MJPEG_URL}"
   "cam-stream-usb_cam+rtsp_fkie-yuv-h264||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
+  # ffmpeg_image_transport arm: usb_cam YUYV -> rgb8 with the ffmpeg
+  # publisher plugin loaded directly on usb_cam's image_transport publisher
+  # (libav encode in-process; no producer-side `republish raw ffmpeg` hop).
+  # Receiver decodes via `republish ffmpeg raw`; +1 ROS topic hop only on
+  # the receive side. ffmpeg_encoder picked from BENCH_FFMPEG_ENC
+  # (env_fairness.sh) so the libav backend tracks --encoder=va|nv|mpp
+  # identically to RCS / gst_bridge / rtsp_fkie.
+  "cam-stream-usb_cam+ffmpeg_transport-yuv-h264||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks ffmpeg_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} ffmpeg_encoder:=\${BENCH_FFMPEG_ENC} ffmpeg_bitrate:=\$((BITRATE * 1000)) ffmpeg_av_options:=\${BENCH_FFMPEG_AV_OPTS}|sleep 3;start_ffmpeg_stream_recv /bench/out_raw"
 
   # --- ros-stream: ROS img -> stream only ---
   "ros-stream-rcs-raw-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|rospub-raw|start_rcs rcs_ros_raw.yaml|"
@@ -360,6 +414,12 @@ SCENARIO_TABLE=(
   "ros-stream-gst_bridge-raw-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|rospub-raw|start_bridge_pipeline /bench/image_raw|"
   "ros-stream-web_video_server-raw-mjpeg||rospub-raw|start_bg ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_ros_raw.launch.yaml wvs_port:=\${WVS_PORT}|sleep 5;start_gst_recv http-mjpeg \${WVS_MJPEG_RAW_URL}"
   "ros-stream-rtsp_fkie-raw-h264||rospub-raw|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_ros_raw.launch.yaml image_topic:=/bench/image_raw rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
+  # ros-stream-ffmpeg_transport-raw-h264: ros_pub publishes raw via
+  # image_transport, so ffmpeg_image_transport's publisher plugin loads
+  # in-process and encoded packets land on /bench/image_raw/ffmpeg without
+  # a separate `republish raw ffmpeg` hop. Mirrors how a real application
+  # using image_transport would publish ffmpeg frames.
+  "ros-stream-ffmpeg_transport-raw-h264||rospub-raw-ffmpeg_transport||sleep 3;start_ffmpeg_stream_recv /bench/image_raw"
 
   # --- cam-both: Camera -> stream + ROS topic ---
   "cam-both-rcs-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_rcs rcs_v4l2_yuv.yaml|"
@@ -372,6 +432,7 @@ SCENARIO_TABLE=(
   "cam-both-usb_cam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
   "cam-both-gscam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
   "cam-both-usb_cam+rtsp_fkie-yuv-h264|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
+  "cam-both-usb_cam+ffmpeg_transport-yuv-h264|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks ffmpeg_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} ffmpeg_encoder:=\${BENCH_FFMPEG_ENC} ffmpeg_bitrate:=\$((BITRATE * 1000)) ffmpeg_av_options:=\${BENCH_FFMPEG_AV_OPTS}|sleep 3;start_ffmpeg_stream_recv /bench/out_raw"
 )
 
 # Find the row for the requested scenario.
@@ -415,6 +476,18 @@ case "${PRODUCER}" in
   framegen-yuyv)   start_frame_gen yuyv /dev/video40 ;;
   framegen-mjpeg)  start_frame_gen mjpeg /dev/video41 ;;
   rospub-raw)      start_ros_pub raw /bench/image_raw ;;
+  # ros_pub publishes raw via image_transport, so the ffmpeg plugin loads
+  # in-process when there is a subscriber on `<topic>/ffmpeg`. This variant
+  # injects the ffmpeg.* plugin parameters so
+  # ros-stream-ffmpeg_transport-raw-h264 encodes inside ros_pub itself rather
+  # than via a separate `republish raw ffmpeg` hop — matching how a real
+  # application using image_transport would publish ffmpeg frames. Requires
+  # BENCH_FFMPEG_ENC and BENCH_FFMPEG_AV_OPTS in the environment (set by
+  # env_fairness.sh).
+  rospub-raw-ffmpeg_transport)
+    BENCH_ROS_PUB_FFMPEG=1 \
+      LD_PRELOAD="$(ros2 pkg prefix ros_camera_server_benchmarks)/lib/ros_camera_server_benchmarks/libvaapi_drm_redirect_shim.so${LD_PRELOAD:+:${LD_PRELOAD}}" \
+      start_ros_pub raw /bench/image_raw ;;
   # ros_camera_server's ros2 input auto-appends /compressed for jpeg/png
   # (image_transport convention), so the producer must publish to the same
   # suffixed name it ends up subscribing to. The base topic (/bench/image_compressed)

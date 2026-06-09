@@ -9,6 +9,8 @@
 #include "ros_camera_server_benchmarks/mjpeg_encode.hpp"
 #include "ros_camera_server_benchmarks/time_util.hpp"
 
+#include <image_transport/image_transport.hpp>
+#include <image_transport/publisher.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
 #include <sensor_msgs/msg/image.hpp>
@@ -63,13 +65,21 @@ int main(int argc, char** argv)
   rclcpp::QoS qos(10);
   qos.reliable().keep_last(10).durability_volatile();
 
-  auto pub_image = (kind == "raw")
-      ? node->create_publisher<sensor_msgs::msg::Image>(topic, qos)
-      : nullptr;
+  // Use image_transport for the raw publisher so transport plugins (notably
+  // ffmpeg_image_transport) can be loaded directly into the producer process,
+  // matching how a real application would publish through image_transport.
+  // Encoders only run when subscribed; ros-stream-* arms that just need raw
+  // (rcs / gst_bridge / web_video_server / rtsp_fkie) pay zero overhead from
+  // the unsubscribed plugin advertisements.
+  image_transport::Publisher pub_image;
+  if (kind == "raw") {
+    pub_image = image_transport::create_publisher(
+        node.get(), topic, qos.get_rmw_qos_profile());
+  }
   auto pub_compressed = (kind == "compressed")
       ? node->create_publisher<sensor_msgs::msg::CompressedImage>(topic, qos)
       : nullptr;
-  if (!pub_image && !pub_compressed) {
+  if (kind != "raw" && kind != "compressed") {
     RCLCPP_FATAL(node->get_logger(), "kind must be 'raw' or 'compressed'");
     return 2;
   }
@@ -135,7 +145,7 @@ int main(int argc, char** argv)
       msg.is_bigendian = 0;
       msg.step = width * 3;
       msg.data = rgb_buf;
-      pub_image->publish(std::move(msg));
+      pub_image.publish(msg);
     } else {
       sensor_msgs::msg::CompressedImage msg;
       msg.header.stamp = stamp;

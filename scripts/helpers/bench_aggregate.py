@@ -382,7 +382,18 @@ def main():
                 cpu_mean, cpu_p95,
             ])
 
-    print(json.dumps(summary, indent=2))
+    # One-line per-receiver status. Full numbers live in summary.json /
+    # report.csv; dumping the whole JSON to stdout drowned the actual
+    # per-scenario verdict (which receivers had data, which were empty).
+    parts = []
+    for kind in RECEIVERS:
+        s = summary[kind]
+        if s["count"] == 0:
+            continue
+        parts.append(
+            f"{kind} count={s['count']}/{s['expected']} "
+            f"p50={s['p50_ms']:.2f}ms p95={s['p95_ms']:.2f}ms")
+    print(f"[bench_aggregate {args.scenario}] {'; '.join(parts) if parts else 'no receiver produced rows'}")
 
     # Receiver-coverage check: surface scenarios that produced no usable data
     # so silently empty CSVs don't reach the report.

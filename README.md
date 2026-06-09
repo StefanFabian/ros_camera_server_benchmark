@@ -1,10 +1,10 @@
 # ros_camera_server_benchmarks
 
 End-to-end latency benchmark harness comparing [`ros_camera_server`](https://www.github.com/StefanFabian/ros_camera_server)
-against `usb_cam`, `gscam`, `ros-gst-bridge`, `web_video_server`, and
-`rtsp_image_transport`. Each frame carries a pixel-domain marker with
-a `CLOCK_MONOTONIC` timestamp; receivers decode it after their normal
-display path and report producer-to-consumer latency.
+against `usb_cam`, `gscam`, `ros-gst-bridge`, `web_video_server`,
+`rtsp_image_transport`, and `ffmpeg_image_transport`. Each frame carries
+a pixel-domain marker with a `CLOCK_MONOTONIC` timestamp; receivers decode
+it after their normal display path and report producer-to-consumer latency.
 
 The methodology, fairness controls, pipeline commands, and cost-layer
 breakdown live in [METHODOLOGY.md](METHODOLOGY.md).
@@ -13,14 +13,15 @@ matrix live in [REPRODUCING.md](REPRODUCING.md).
 
 ## Stacks compared
 
-| Stack                  | Role                   | Transports exercised        |
-| ---------------------- | ---------------------- | --------------------------- |
-| `ros_camera_server`    | Subject under test     | UDP-RTP, WebRTC, ROS topic  |
-| `usb_cam`              | V4L2 → ROS driver      | ROS topic (+ bridge to RTP) |
-| `gscam`                | V4L2 → ROS driver      | ROS topic (+ bridge to RTP) |
-| `ros-gst-bridge`       | ROS → GStreamer bridge | UDP-RTP H.264               |
-| `web_video_server`     | ROS → HTTP             | HTTP MJPEG                  |
-| `rtsp_image_transport` | ROS → RTSP (FKIE)      | RTSP H.264                  |
+| Stack                    | Role                   | Transports exercised         |
+| ------------------------ | ---------------------- | ---------------------------- |
+| `ros_camera_server`      | Subject under test     | UDP-RTP, WebRTC, ROS topic   |
+| `usb_cam`                | V4L2 → ROS driver      | ROS topic (+ bridge to RTP)  |
+| `gscam`                  | V4L2 → ROS driver      | ROS topic (+ bridge to RTP)  |
+| `ros-gst-bridge`         | ROS → GStreamer bridge | UDP-RTP H.264                |
+| `web_video_server`       | ROS → HTTP             | HTTP MJPEG                   |
+| `rtsp_image_transport`   | ROS → RTSP (FKIE)      | RTSP H.264                   |
+| `ffmpeg_image_transport` | image_transport plugin | H.264 (libav) over ROS topic |
 
 ## Scenario groups
 

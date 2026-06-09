@@ -1,0 +1,39 @@
+launch:
+  # Receive-side decoder for the *-ffmpeg_transport-h264 arms. ffmpeg_image_transport's
+  # subscriber plugin decodes FFMPEGPacket back to sensor_msgs/Image via libav.
+  # Wired through `image_transport republish ffmpeg raw`, identical in shape
+  # to rtsp_camera_proxy_recv.launch.yaml but without the URL-keepalive
+  # subscribers (ffmpeg is pure ROS topics; no RTSP server to keep alive).
+  #
+  # in_base must match the encoder side's `out` base (default `/out`); the
+  # subscriber listens on `<in_base>/ffmpeg` automatically.
+  - arg: { name: "in_base", default: "/out" }
+  - arg: { name: "out_topic", default: "/bench/ffmpeg_recv_image" }
+
+  - node:
+      pkg: "image_transport"
+      exec: "republish"
+      name: "ffmpeg_subscriber"
+      # jazzy's image_transport republish reads in_transport/out_transport
+      # from ROS parameters, not positional argv. See ffmpeg_h264_yuv.launch.yaml
+      # for the same caveat on the encoder side.
+      #
+      # NOTE: on the subscriber side, the `in:=...` base remap is NOT honored
+      # by image_transport's transport-plugin topic resolution (ros2 topic
+      # info shows the subscription anchored at `/in/ffmpeg` regardless).
+      # Remap the fully-qualified subtopic `in/ffmpeg` directly to the
+      # encoder-side `<in_base>/ffmpeg`.
+      # `in.ffmpeg.*` namespace tracks the unremapped subscriber-side base
+      # topic ("in"); see the in/ffmpeg remap caveat above.
+      # decoders.h264 list pins the libav software h264 decoder. h264_cuvid
+      # (the default-first NVDEC decoder) holds a multi-frame DPB even with
+      # no B-frames in the stream, which raised p50 by ~190 ms on this
+      # machine when left as the default. The libav software decoder
+      # outputs frames as soon as parsing completes.
+      param:
+        - { name: "in_transport", value: "ffmpeg" }
+        - { name: "out_transport", value: "raw" }
+        - { name: "in.ffmpeg.decoders.h264", value: "h264" }
+      remap:
+        - { from: "in/ffmpeg", to: "$(var in_base)/ffmpeg" }
+        - { from: "out", to: "$(var out_topic)" }

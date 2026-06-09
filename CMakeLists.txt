@@ -54,7 +54,7 @@ add_executable(frame_gen src/frame_gen.cpp)
 target_link_libraries(frame_gen benchmark_frame_render PkgConfig::JPEG PkgConfig::GST)
 
 add_executable(ros_pub src/ros_pub.cpp)
-ament_target_dependencies(ros_pub rclcpp sensor_msgs)
+ament_target_dependencies(ros_pub rclcpp sensor_msgs image_transport)
 target_link_libraries(ros_pub benchmark_frame_render PkgConfig::JPEG)
 
 # Generalized GStreamer receiver parameterized over transport
@@ -92,6 +92,18 @@ set_target_properties(v4l2loopback_timeperframe_shim PROPERTIES
   PREFIX "lib")
 target_link_libraries(v4l2loopback_timeperframe_shim ${CMAKE_DL_LIBS})
 
+# LD_PRELOAD shim that pins ffmpeg_image_transport's VAAPI encoder to the
+# DRM render node in $BENCH_VAAPI_DRM_DEVICE. Needed because libavutil's
+# autodetect picks /dev/dri/renderD128 with no fallback when the iGPU is
+# not the primary DRM device (e.g. NVIDIA dGPU + Intel iGPU host).
+add_library(vaapi_drm_redirect_shim SHARED
+  src/vaapi_drm_redirect_shim.c)
+set_target_properties(vaapi_drm_redirect_shim PROPERTIES
+  C_STANDARD 11
+  POSITION_INDEPENDENT_CODE ON
+  PREFIX "lib")
+target_link_libraries(vaapi_drm_redirect_shim ${CMAKE_DL_LIBS})
+
 install(TARGETS benchmark_marker benchmark_recv_loop benchmark_frame_render
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
@@ -104,7 +116,7 @@ if(WEBRTC_RECV_BUILT)
   install(TARGETS webrtc_recv DESTINATION lib/${PROJECT_NAME})
 endif()
 
-install(TARGETS v4l2loopback_timeperframe_shim
+install(TARGETS v4l2loopback_timeperframe_shim vaapi_drm_redirect_shim
   LIBRARY DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY config launch

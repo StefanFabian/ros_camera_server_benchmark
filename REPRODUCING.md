@@ -38,14 +38,15 @@ Each scenario depends on a different subset; if a stack isn't
 installed, `run_scenario.sh` prints a clear message and skips that
 scenario.
 
-| Source           | Packages                                                     | Required for                                               |
-| ---------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
-| this workspace   | `ros_camera_server`                                          | all `*-rcs-*` scenarios                                    |
-| ROS distro (apt) | `usb_cam` (`ros-<distro>-usb-cam`)                           | `*-usb_cam-*`, `*-web_video_server-*`, `*-rtsp_fkie-*`     |
-| ROS distro (apt) | `gscam` (`ros-<distro>-gscam`)                               | `*-gscam-*`                                                |
-| source build     | `gst_bridge` (BrettRD/ros-gst-bridge)                        | `*-gst_bridge-*`, `cam-both-usb_cam-*`, `cam-both-gscam-*` |
-| ROS distro (apt) | `web_video_server` (`ros-<distro>-web-video-server`)         | `*-web_video_server-*`                                     |
-| ROS distro (apt) | `rtsp_image_transport` (`ros-<distro>-rtsp-image-transport`) | `*-rtsp_fkie-*`                                            |
+| Source           | Packages                                                         | Required for                                                                   |
+| ---------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| this workspace   | `ros_camera_server`                                              | all `*-rcs-*` scenarios                                                        |
+| ROS distro (apt) | `usb_cam` (`ros-<distro>-usb-cam`)                               | `*-usb_cam-*`, `*-web_video_server-*`, `*-rtsp_fkie-*`, `*-ffmpeg_transport-*` |
+| ROS distro (apt) | `gscam` (`ros-<distro>-gscam`)                                   | `*-gscam-*`                                                                    |
+| source build     | `gst_bridge` (BrettRD/ros-gst-bridge)                            | `*-gst_bridge-*`, `cam-both-usb_cam-*`, `cam-both-gscam-*`                     |
+| ROS distro (apt) | `web_video_server` (`ros-<distro>-web-video-server`)             | `*-web_video_server-*`                                                         |
+| ROS distro (apt) | `rtsp_image_transport` (`ros-<distro>-rtsp-image-transport`)     | `*-rtsp_fkie-*`                                                                |
+| ROS distro (apt) | `ffmpeg_image_transport` (`ros-<distro>-ffmpeg-image-transport`) | `*-ffmpeg_transport-*`                                                         |
 
 Install rosdep-able packages from the workspace root:
 
@@ -219,15 +220,16 @@ happens inside the publisher.
 
 ### cam-stream — Camera → encoded stream
 
-| ID                                            | Source / Stack                         | Stream        |
-| --------------------------------------------- | -------------------------------------- | ------------- |
-| cam-stream-floor                              | gst-launch v4l2src (UDP-RTP floor)     | UDP-RTP       |
-| cam-stream-rcs-yuv-rtp                        | `ros_camera_server` V4L2 yuv           | UDP-RTP H.264 |
-| cam-stream-rcs-yuv-webrtc                     | `ros_camera_server` V4L2 yuv           | WebRTC        |
-| cam-stream-usb_cam+gst_bridge-yuv-rtp         | `usb_cam` yuv + `ros-gst-bridge`       | UDP-RTP H.264 |
-| cam-stream-gscam+gst_bridge-yuv-rtp           | `gscam` yuv + `ros-gst-bridge`         | UDP-RTP H.264 |
-| cam-stream-usb_cam+web_video_server-yuv-mjpeg | `usb_cam` yuv + `web_video_server`     | HTTP MJPEG    |
-| cam-stream-usb_cam+rtsp_fkie-yuv-h264         | `usb_cam` yuv + `rtsp_image_transport` | RTSP H.264    |
+| ID                                            | Source / Stack                           | Stream        |
+| --------------------------------------------- | ---------------------------------------- | ------------- |
+| cam-stream-floor                              | gst-launch v4l2src (UDP-RTP floor)       | UDP-RTP       |
+| cam-stream-rcs-yuv-rtp                        | `ros_camera_server` V4L2 yuv             | UDP-RTP H.264 |
+| cam-stream-rcs-yuv-webrtc                     | `ros_camera_server` V4L2 yuv             | WebRTC        |
+| cam-stream-usb_cam+gst_bridge-yuv-rtp         | `usb_cam` yuv + `ros-gst-bridge`         | UDP-RTP H.264 |
+| cam-stream-gscam+gst_bridge-yuv-rtp           | `gscam` yuv + `ros-gst-bridge`           | UDP-RTP H.264 |
+| cam-stream-usb_cam+web_video_server-yuv-mjpeg | `usb_cam` yuv + `web_video_server`       | HTTP MJPEG    |
+| cam-stream-usb_cam+rtsp_fkie-yuv-h264         | `usb_cam` yuv + `rtsp_image_transport`   | RTSP H.264    |
+| cam-stream-usb_cam+ffmpeg_transport-yuv-h264  | `usb_cam` yuv + `ffmpeg_image_transport` | H.264 (libav) |
 
 `cam-stream-usb_cam+gst_bridge-yuv-rtp` / `cam-stream-gscam+gst_bridge-yuv-rtp`
 use the same launch files as their cam-both counterparts (the bridge's
@@ -236,29 +238,31 @@ skip the ROS receiver so only the encoded stream is measured.
 
 ### ros-stream — ROS image input → encoded stream
 
-| ID                                    | Producer / Stack                       | Stream        |
-| ------------------------------------- | -------------------------------------- | ------------- |
-| ros-stream-rcs-raw-rtp                | `ros_pub` raw / `ros_camera_server`    | UDP-RTP H.264 |
-| ros-stream-rcs-jpeg-rtp               | `ros_pub` jpeg / `ros_camera_server`   | UDP-RTP H.264 |
-| ros-stream-rcs-raw-webrtc             | `ros_pub` raw / `ros_camera_server`    | WebRTC        |
-| ros-stream-rcs-jpeg-webrtc            | `ros_pub` jpeg / `ros_camera_server`   | WebRTC        |
-| ros-stream-gst_bridge-raw-rtp         | `ros_pub` raw / `ros-gst-bridge`       | UDP-RTP H.264 |
-| ros-stream-web_video_server-raw-mjpeg | `ros_pub` raw / `web_video_server`     | HTTP MJPEG    |
-| ros-stream-rtsp_fkie-raw-h264         | `ros_pub` raw / `rtsp_image_transport` | RTSP H.264    |
+| ID                                    | Producer / Stack                         | Stream        |
+| ------------------------------------- | ---------------------------------------- | ------------- |
+| ros-stream-rcs-raw-rtp                | `ros_pub` raw / `ros_camera_server`      | UDP-RTP H.264 |
+| ros-stream-rcs-jpeg-rtp               | `ros_pub` jpeg / `ros_camera_server`     | UDP-RTP H.264 |
+| ros-stream-rcs-raw-webrtc             | `ros_pub` raw / `ros_camera_server`      | WebRTC        |
+| ros-stream-rcs-jpeg-webrtc            | `ros_pub` jpeg / `ros_camera_server`     | WebRTC        |
+| ros-stream-gst_bridge-raw-rtp         | `ros_pub` raw / `ros-gst-bridge`         | UDP-RTP H.264 |
+| ros-stream-web_video_server-raw-mjpeg | `ros_pub` raw / `web_video_server`       | HTTP MJPEG    |
+| ros-stream-rtsp_fkie-raw-h264         | `ros_pub` raw / `rtsp_image_transport`   | RTSP H.264    |
+| ros-stream-ffmpeg_transport-raw-h264  | `ros_pub` raw / `ffmpeg_image_transport` | H.264 (libav) |
 
 ### cam-both — Camera → both stream + ROS topic
 
-| ID                                    | Source / Stack                                  | Stream        | ROS topic |
-| ------------------------------------- | ----------------------------------------------- | ------------- | --------- |
-| cam-both-rcs-yuv-rtp                  | `ros_camera_server` V4L2 yuv                    | UDP-RTP H.264 | rgb8      |
-| cam-both-rcs-mjpeg-rtp                | `ros_camera_server` V4L2 mjpeg passthrough      | UDP-RTP H.264 | jpeg      |
-| cam-both-rcs-mjpeg-decoded-rtp        | `ros_camera_server` V4L2 mjpeg → jpegdec → rgb8 | UDP-RTP H.264 | rgb8      |
-| cam-both-rcs-yuv-webrtc               | `ros_camera_server` V4L2 yuv                    | WebRTC        | rgb8      |
-| cam-both-usb_cam+gst_bridge-yuv-rtp   | `usb_cam` yuv + `ros-gst-bridge`                | UDP-RTP H.264 | rgb8      |
-| cam-both-gscam+gst_bridge-yuv-rtp     | `gscam` yuv + `ros-gst-bridge`                  | UDP-RTP H.264 | rgb8      |
-| cam-both-usb_cam+gst_bridge-mjpeg-rtp | `usb_cam` mjpeg + `ros-gst-bridge`              | UDP-RTP H.264 | rgb8      |
-| cam-both-gscam+gst_bridge-mjpeg-rtp   | `gscam` mjpeg + `ros-gst-bridge`                | UDP-RTP H.264 | rgb8      |
-| cam-both-usb_cam+rtsp_fkie-yuv-h264   | `usb_cam` yuv + `rtsp_image_transport`          | RTSP H.264    | rgb8      |
+| ID                                         | Source / Stack                                  | Stream        | ROS topic |
+| ------------------------------------------ | ----------------------------------------------- | ------------- | --------- |
+| cam-both-rcs-yuv-rtp                       | `ros_camera_server` V4L2 yuv                    | UDP-RTP H.264 | rgb8      |
+| cam-both-rcs-mjpeg-rtp                     | `ros_camera_server` V4L2 mjpeg passthrough      | UDP-RTP H.264 | jpeg      |
+| cam-both-rcs-mjpeg-decoded-rtp             | `ros_camera_server` V4L2 mjpeg → jpegdec → rgb8 | UDP-RTP H.264 | rgb8      |
+| cam-both-rcs-yuv-webrtc                    | `ros_camera_server` V4L2 yuv                    | WebRTC        | rgb8      |
+| cam-both-usb_cam+gst_bridge-yuv-rtp        | `usb_cam` yuv + `ros-gst-bridge`                | UDP-RTP H.264 | rgb8      |
+| cam-both-gscam+gst_bridge-yuv-rtp          | `gscam` yuv + `ros-gst-bridge`                  | UDP-RTP H.264 | rgb8      |
+| cam-both-usb_cam+gst_bridge-mjpeg-rtp      | `usb_cam` mjpeg + `ros-gst-bridge`              | UDP-RTP H.264 | rgb8      |
+| cam-both-gscam+gst_bridge-mjpeg-rtp        | `gscam` mjpeg + `ros-gst-bridge`                | UDP-RTP H.264 | rgb8      |
+| cam-both-usb_cam+rtsp_fkie-yuv-h264        | `usb_cam` yuv + `rtsp_image_transport`          | RTSP H.264    | rgb8      |
+| cam-both-usb_cam+ffmpeg_transport-yuv-h264 | `usb_cam` yuv + `ffmpeg_image_transport`        | H.264 (libav) | rgb8      |
 
 Notes on stack-specific behaviour:
 
@@ -270,12 +274,16 @@ Notes on stack-specific behaviour:
   pipeline accepts `CompressedImage` via the `ros2` input + jpeg
   format. No bridge counterpart exists because `gst_bridge` lacks
   `roscompressedimagesrc`.
-- **`*-web_video_server-*` + `*-rtsp_fkie-*`**: `web_video_server` and
-  `rtsp_image_transport` consume ROS Image topics (not Compressed),
-  so their ros-stream entries are raw-input only. For `cam-both` the
-  same launch file publishes the topic and serves the stream
-  simultaneously; the ROS topic flows past the encoder in parallel
-  rather than through it.
+- **`*-web_video_server-*` + `*-rtsp_fkie-*` + `*-ffmpeg_transport-*`**:
+  `web_video_server`, `rtsp_image_transport`, and `ffmpeg_image_transport`
+  consume ROS Image topics (not Compressed), so their ros-stream entries
+  are raw-input only. For `cam-both` the same launch file publishes the
+  topic and serves the stream simultaneously; the ROS topic flows past
+  the encoder in parallel rather than through it.
+- **`*-ffmpeg_transport-*`**: backend mapping (`va`→`h264_vaapi`,
+  `nv`→`h264_nvenc`, `mpp`→`h264_rkmpp`), low-latency knobs, software
+  decoder pinning, and the receive-path topic hop are described in
+  METHODOLOGY.md.
 
 ### Scenario ID convention
 

@@ -27,6 +27,7 @@
   <exec_depend>gstreamer1.0-plugins-base</exec_depend>
   <exec_depend>gstreamer1.0-plugins-good</exec_depend>
   <!--Stacks-under-test. Each scenario in run_scenario.sh requires its own        subset; missing packages cause that scenario to be skipped at runtime        (run_scenario.sh preflight). gst_bridge has no rosdep key on most        distros and must be source-built; see REPRODUCING.md.        web_video_server and rtsp_image_transport scenarios are skipped if        their packages are absent.-->
+  <exec_depend>ffmpeg_image_transport</exec_depend>
   <exec_depend>ros_camera_server</exec_depend>
   <exec_depend>rtsp_image_transport</exec_depend>
   <exec_depend>usb_cam</exec_depend>

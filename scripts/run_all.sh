@@ -52,11 +52,13 @@ ALL_SCENARIOS=(
   cam-stream-rcs-yuv-rtp cam-stream-rcs-yuv-webrtc
   cam-stream-usb_cam+gst_bridge-yuv-rtp cam-stream-gscam+gst_bridge-yuv-rtp
   cam-stream-usb_cam+web_video_server-yuv-mjpeg cam-stream-usb_cam+rtsp_fkie-yuv-h264
+  cam-stream-usb_cam+ffmpeg_transport-yuv-h264
   # ros-stream — ROS image input -> stream.
   ros-stream-rcs-raw-rtp ros-stream-rcs-jpeg-rtp
   ros-stream-rcs-raw-webrtc ros-stream-rcs-jpeg-webrtc
   ros-stream-gst_bridge-raw-rtp
   ros-stream-web_video_server-raw-mjpeg ros-stream-rtsp_fkie-raw-h264
+  ros-stream-ffmpeg_transport-raw-h264
   # cam-both — Camera -> both stream + ROS topic. cam-both-rcs-mjpeg-decoded-rtp
   # mirrors cam-ros-rcs-mjpeg-decoded for the dual-receiver direction,
   # comparable to the usb_cam / gscam + gst_bridge mjpeg arms which always
@@ -66,6 +68,7 @@ ALL_SCENARIOS=(
   cam-both-usb_cam+gst_bridge-yuv-rtp cam-both-gscam+gst_bridge-yuv-rtp
   cam-both-usb_cam+gst_bridge-mjpeg-rtp cam-both-gscam+gst_bridge-mjpeg-rtp
   cam-both-usb_cam+rtsp_fkie-yuv-h264
+  cam-both-usb_cam+ffmpeg_transport-yuv-h264
 )
 
 # `"${@:-default}"` quoted collapses the default into a single element, so
