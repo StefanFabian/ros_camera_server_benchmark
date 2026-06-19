@@ -101,8 +101,8 @@ void usage()
 int main(int argc, char** argv)
 {
   std::string device = "/dev/video10";
-  int width = 1280, height = 720, fps = 30, cell = 16, duration_s = 0;
-  int video_cycle_s = 5;
+  int width = 1920, height = 1080, fps = 30, cell = 16, duration_s = 0;
+  int video_cycle_s = 60;
   std::string format = "yuyv";
   std::string video_path;
   std::string underrun_csv_path;

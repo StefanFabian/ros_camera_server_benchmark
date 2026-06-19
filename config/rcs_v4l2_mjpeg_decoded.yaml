@@ -6,8 +6,8 @@ cameras:
     input:
       type: v4l2
       device: "/dev/video41"
-      width: 1280
-      height: 720
+      width: ${BENCH_WIDTH}
+      height: ${BENCH_HEIGHT}
       framerate: "30/1"
     # cam-ros-rcs-mjpeg-decoded: ros_camera_server reads MJPEG from V4L2 and
     # decodes to rgb8 on the ros2 output (codec: raw + format: rgb8 inserts

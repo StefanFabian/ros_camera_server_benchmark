@@ -1,5 +1,5 @@
 # ros_pub producer counters
-frames_produced=547
-encode_count=547
-encode_total_ns=935622811
-encode_max_ns=3374641
+frames_produced=1042
+encode_count=1042
+encode_total_ns=3088763101
+encode_max_ns=7056127

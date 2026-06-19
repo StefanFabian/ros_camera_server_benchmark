@@ -78,11 +78,17 @@ RESULTS_ROOT="${BENCH_RESULTS_DIR:-${PWD}/results}"
 OUT="${RESULTS_ROOT}/${SCENARIO}"
 mkdir -p "${OUT}"
 
-DURATION="${BENCH_DURATION:-15}"
+DURATION="${BENCH_DURATION:-30}"
 WARMUP="${BENCH_WARMUP_FRAMES:-60}"
-MAX_FRAMES="${BENCH_MAX_FRAMES:-750}"
-WIDTH="${BENCH_WIDTH:-1280}"
-HEIGHT="${BENCH_HEIGHT:-720}"
+MAX_FRAMES="${BENCH_MAX_FRAMES:-900}"
+WIDTH="${BENCH_WIDTH:-1920}"
+HEIGHT="${BENCH_HEIGHT:-1080}"
+# Re-export the resolved resolution so start_rcs's envsubst pass substitutes
+# ${BENCH_WIDTH}/${BENCH_HEIGHT} in the rcs configs (same mechanism as
+# ${BENCH_RCS_ENC}). Keeps RCS at the harness operating point instead of a
+# hardcoded one; a config/harness resolution mismatch silently corrupts the
+# latency marker (downscale resamples the cell strip -> CRC fails).
+export BENCH_WIDTH="${WIDTH}" BENCH_HEIGHT="${HEIGHT}"
 FPS="${BENCH_FPS:-30}"
 RTP_PORT="${BENCH_RTP_PORT:-7100}"
 BITRATE="${BENCH_BITRATE:-1000}"
@@ -287,7 +293,7 @@ start_ros_pub() {  # kind topic
     args+=(
       -p "${prefix}.ffmpeg.encoder:=${BENCH_FFMPEG_ENC}"
       -p "${prefix}.ffmpeg.bit_rate:=$((BITRATE * 1000))"
-      -p "${prefix}.ffmpeg.gop_size:=10"
+      -p "${prefix}.ffmpeg.gop_size:=30"
       -p "${prefix}.ffmpeg.max_b_frames:=0"
       -p "${prefix}.ffmpeg.encoder_av_options:=${BENCH_FFMPEG_AV_OPTS}"
     )
@@ -375,8 +381,8 @@ SCENARIO_TABLE=(
   "cam-ros-rcs-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_rcs rcs_v4l2_yuv_rosonly.yaml|"
   "cam-ros-rcs-mjpeg|start_ros_recv_jpeg ${RCS_JPEG_TOPIC}|framegen-mjpeg|start_rcs rcs_v4l2_mjpeg_rosonly.yaml|"
   "cam-ros-rcs-mjpeg-decoded|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_rcs rcs_v4l2_mjpeg_decoded.yaml|"
-  "cam-ros-usb_cam-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS}|"
-  "cam-ros-usb_cam-mjpeg|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw fps:=\${FPS}|"
+  "cam-ros-usb_cam-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}|"
+  "cam-ros-usb_cam-mjpeg|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}|"
   "cam-ros-gscam-yuv|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}|"
   "cam-ros-gscam-mjpeg|start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}|"
 
@@ -391,12 +397,12 @@ SCENARIO_TABLE=(
   # socket; ros-stream webrtc scenarios use the same post-stack ordering.
   # Receiver-first ordering races the WS server bring-up and exhausts retries.
   "cam-stream-rcs-yuv-webrtc||framegen-yuyv|start_rcs rcs_v4l2_yuv_webrtc.yaml|sleep 3;start_webrtc_recv \${WS_BENCH0}"
-  "cam-stream-usb_cam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-stream-usb_cam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
   "cam-stream-gscam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
   # web_video_server boots an HTTP server; gst_recv is started after a 5 s
   # settling window so the first request hits a server already serving frames.
-  "cam-stream-usb_cam+web_video_server-yuv-mjpeg||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} wvs_port:=\${WVS_PORT}|sleep 5;start_gst_recv http-mjpeg \${WVS_MJPEG_URL}"
-  "cam-stream-usb_cam+rtsp_fkie-yuv-h264||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
+  "cam-stream-usb_cam+web_video_server-yuv-mjpeg||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS} wvs_port:=\${WVS_PORT}|sleep 5;start_gst_recv http-mjpeg \${WVS_MJPEG_URL}"
+  "cam-stream-usb_cam+rtsp_fkie-yuv-h264||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
   # ffmpeg_image_transport arm: usb_cam YUYV -> rgb8 with the ffmpeg
   # publisher plugin loaded directly on usb_cam's image_transport publisher
   # (libav encode in-process; no producer-side `republish raw ffmpeg` hop).
@@ -404,7 +410,7 @@ SCENARIO_TABLE=(
   # the receive side. ffmpeg_encoder picked from BENCH_FFMPEG_ENC
   # (env_fairness.sh) so the libav backend tracks --encoder=va|nv|mpp
   # identically to RCS / gst_bridge / rtsp_fkie.
-  "cam-stream-usb_cam+ffmpeg_transport-yuv-h264||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks ffmpeg_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} ffmpeg_encoder:=\${BENCH_FFMPEG_ENC} ffmpeg_bitrate:=\$((BITRATE * 1000)) ffmpeg_av_options:=\${BENCH_FFMPEG_AV_OPTS}|sleep 3;start_ffmpeg_stream_recv /bench/out_raw"
+  "cam-stream-usb_cam+ffmpeg_transport-yuv-h264||framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks ffmpeg_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS} ffmpeg_encoder:=\${BENCH_FFMPEG_ENC} ffmpeg_bitrate:=\$((BITRATE * 1000)) ffmpeg_av_options:=\${BENCH_FFMPEG_AV_OPTS}|sleep 3;start_ffmpeg_stream_recv /bench/out_raw"
 
   # --- ros-stream: ROS img -> stream only ---
   "ros-stream-rcs-raw-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT}|rospub-raw|start_rcs rcs_ros_raw.yaml|"
@@ -427,12 +433,12 @@ SCENARIO_TABLE=(
   "cam-both-rcs-mjpeg-decoded-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_rcs rcs_v4l2_mjpeg_decoded_rtp.yaml|"
   # webrtc index is 1 in rcs_v4l2_yuv_both_webrtc.yaml (ros2 is index 0).
   "cam-both-rcs-yuv-webrtc|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_rcs rcs_v4l2_yuv_both_webrtc.yaml|sleep 3;start_webrtc_recv \${WS_BENCH1}"
-  "cam-both-usb_cam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-both-usb_cam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
   "cam-both-gscam+gst_bridge-yuv-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
-  "cam-both-usb_cam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
+  "cam-both-usb_cam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks usb_cam_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
   "cam-both-gscam+gst_bridge-mjpeg-rtp|start_gst_recv udp-rtp udp://127.0.0.1:\${RTP_PORT};start_ros_recv_raw /bench/out_raw|framegen-mjpeg|start_bg ros2 launch ros_camera_server_benchmarks gscam2_only_mjpeg.launch.yaml device:=/dev/video41 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS}; sleep 1; start_bridge_pipeline /bench/out_raw|"
-  "cam-both-usb_cam+rtsp_fkie-yuv-h264|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
-  "cam-both-usb_cam+ffmpeg_transport-yuv-h264|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks ffmpeg_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw fps:=\${FPS} ffmpeg_encoder:=\${BENCH_FFMPEG_ENC} ffmpeg_bitrate:=\$((BITRATE * 1000)) ffmpeg_av_options:=\${BENCH_FFMPEG_AV_OPTS}|sleep 3;start_ffmpeg_stream_recv /bench/out_raw"
+  "cam-both-usb_cam+rtsp_fkie-yuv-h264|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS} rtsp_bitrate:=\$((BITRATE * 1000))|sleep 3;start_rtsp_stream_recv"
+  "cam-both-usb_cam+ffmpeg_transport-yuv-h264|start_ros_recv_raw /bench/out_raw|framegen-yuyv|start_bg ros2 launch ros_camera_server_benchmarks ffmpeg_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=\${WIDTH} height:=\${HEIGHT} fps:=\${FPS} ffmpeg_encoder:=\${BENCH_FFMPEG_ENC} ffmpeg_bitrate:=\$((BITRATE * 1000)) ffmpeg_av_options:=\${BENCH_FFMPEG_AV_OPTS}|sleep 3;start_ffmpeg_stream_recv /bench/out_raw"
 )
 
 # Find the row for the requested scenario.

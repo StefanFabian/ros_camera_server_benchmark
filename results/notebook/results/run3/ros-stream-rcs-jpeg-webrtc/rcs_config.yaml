@@ -10,14 +10,14 @@ cameras:
       format: jpeg
       # Pin source caps so the encoder negotiates deterministically (see
       # rcs_ros_raw_webrtc.yaml for the longer note).
-      width: 1280
-      height: 720
+      width: 1920
+      height: 1080
       framerate: "30/1"
     # ros-stream-rcs-jpeg-webrtc: ROS compressed input -> WebRTC H.264. No
     # width/height on the output — we don't want a Scale node.
     outputs:
       - type: webrtc
         codec: h264
-        encoder: NV
+        encoder: VA_LP
         framerate: "30/1"
         bitrate: 1000

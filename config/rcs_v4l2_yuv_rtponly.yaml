@@ -6,8 +6,8 @@ cameras:
     input:
       type: v4l2
       device: "/dev/video40"
-      width: 1280
-      height: 720
+      width: ${BENCH_WIDTH}
+      height: ${BENCH_HEIGHT}
       framerate: "30/1"
     # cam-stream-rcs-yuv-rtp: RTP output only (no ROS topic side-effect). Pairs
     # with the combined config rcs_v4l2_yuv.yaml which is used for cam-both.
@@ -19,5 +19,5 @@ cameras:
         host: "127.0.0.1"
         port: 7100
         bitrate: 1000
-        width: 1280
-        height: 720
+        width: ${BENCH_WIDTH}
+        height: ${BENCH_HEIGHT}

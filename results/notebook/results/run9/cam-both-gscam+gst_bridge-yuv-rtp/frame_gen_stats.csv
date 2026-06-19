@@ -1,9 +1,9 @@
 # frame_gen producer counters
-frames_produced=488
+frames_produced=983
 underruns=0
 underrun_total_late_ms=0
-base_video_frames=1100
+base_video_frames=1439
 base_video_catch_up_reuses=0
-encode_count=488
-encode_total_ns=127995563
-encode_max_ns=1021962
+encode_count=983
+encode_total_ns=620857223
+encode_max_ns=2121950

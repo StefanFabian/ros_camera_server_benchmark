@@ -1,11 +1,11 @@
 {
   "scenario": "cam-ros-gscam-mjpeg",
-  "duration_s": 15,
+  "duration_s": 30,
   "warmup_frames": 60,
-  "expected_after_warmup": 390,
+  "expected_after_warmup": 840,
   "stream": {
     "count": 0,
-    "expected": 390,
+    "expected": 840,
     "frame_loss": null,
     "fps_effective": null,
     "mean_ms": null,
@@ -19,7 +19,7 @@
     "p99_ms_raw": null,
     "mean_ms_raw": null,
     "max_ms_raw": null,
-    "producer_encode_mean_ms": 1.662935943107221,
+    "producer_encode_mean_ms": 3.3150046838235294,
     "first_id": null,
     "last_id": null,
     "gap_count": null,
@@ -28,32 +28,32 @@
     "decoded_ratio": null
   },
   "ros_raw": {
-    "count": 375,
-    "expected": 390,
-    "frame_loss": 0.038461538461538436,
-    "fps_effective": 30.001005414710207,
-    "mean_ms": 3.624390888892779,
-    "stddev_ms": 0.29722259134762696,
-    "p50_ms": 3.596708056892779,
-    "p95_ms": 4.03381745689278,
-    "p99_ms": 4.882842116892778,
-    "max_ms": 5.823105056892779,
-    "p50_ms_raw": 5.259644,
-    "p95_ms_raw": 5.6967534,
-    "p99_ms_raw": 6.545778059999999,
-    "mean_ms_raw": 5.287326832,
-    "max_ms_raw": 7.486041,
-    "producer_encode_mean_ms": 1.662935943107221,
-    "first_id": 82,
-    "last_id": 456,
+    "count": 823,
+    "expected": 840,
+    "frame_loss": 0.020238095238095277,
+    "fps_effective": 30.003018575228836,
+    "mean_ms": 9.096042666115718,
+    "stddev_ms": 0.5318624274696184,
+    "p50_ms": 9.03804331617647,
+    "p95_ms": 9.701575716176471,
+    "p99_ms": 11.05768939617644,
+    "max_ms": 16.624674316176474,
+    "p50_ms_raw": 12.353048,
+    "p95_ms_raw": 13.0165804,
+    "p99_ms_raw": 14.37269407999997,
+    "mean_ms_raw": 12.411047349939247,
+    "max_ms_raw": 19.939679,
+    "producer_encode_mean_ms": 3.3150046838235294,
+    "first_id": 129,
+    "last_id": 951,
     "gap_count": 0,
-    "seen": 435,
-    "decoded": 435,
+    "seen": 883,
+    "decoded": 883,
     "decoded_ratio": 1.0
   },
   "ros_jpeg": {
     "count": 0,
-    "expected": 390,
+    "expected": 840,
     "frame_loss": null,
     "fps_effective": null,
     "mean_ms": null,
@@ -67,7 +67,7 @@
     "p99_ms_raw": null,
     "mean_ms_raw": null,
     "max_ms_raw": null,
-    "producer_encode_mean_ms": 1.662935943107221,
+    "producer_encode_mean_ms": 3.3150046838235294,
     "first_id": null,
     "last_id": null,
     "gap_count": null,
@@ -79,27 +79,27 @@
     "ros2": {
       "mean_pct": 0.0,
       "p95_pct": 0.0,
-      "n": 26
+      "n": 56
     },
     "gscam_node": {
-      "mean_pct": 9.307692307692308,
-      "p95_pct": 10.0,
-      "n": 26
+      "mean_pct": 26.214285714285715,
+      "p95_pct": 28.0,
+      "n": 56
     },
     "_total": {
-      "mean_pct": 9.307692307692308,
-      "p95_pct": 10.0,
-      "n": 26
+      "mean_pct": 26.214285714285715,
+      "p95_pct": 28.0,
+      "n": 56
     }
   },
   "producer": {
-    "frames_produced": 457,
+    "frames_produced": 952,
     "underruns": 0,
     "underrun_total_late_ms": 0,
-    "base_video_frames": 1100,
+    "base_video_frames": 1439,
     "base_video_catch_up_reuses": 0,
-    "encode_count": 457,
-    "encode_total_ns": 759961726,
-    "encode_max_ns": 3239724
+    "encode_count": 952,
+    "encode_total_ns": 3155884459,
+    "encode_max_ns": 7835565
   }
 }

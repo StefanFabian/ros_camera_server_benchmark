@@ -1,43 +1,65 @@
-+ ros2 run ros_camera_server_benchmarks ros_pub --ros-args -p kind:=compressed -p topic:=/bench/image_compressed/compressed -p width:=1280 -p height:=720 -p fps:=30 -p encode_stats:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/ros-stream-rcs-jpeg-webrtc/ros_pub_stats.csv -p video:=../input.robocup_crossing_ramps.mp4 -p video_cycle_seconds:=60
-[0m[INFO] [1778004701.209560418] [ros_pub]: base video first frame ready, cycle capacity 1800[0m
-+ ros2 launch ros_camera_server_benchmarks rcs.launch.yaml config_path:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/ros-stream-rcs-jpeg-webrtc/rcs_config.yaml
-[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-20-11-41-761905-Stefan-TP-Ubuntu24-381043
++ ros2 run ros_camera_server_benchmarks ros_pub --ros-args -p kind:=compressed -p topic:=/bench/image_compressed/compressed -p width:=1920 -p height:=1080 -p fps:=30 -p encode_stats:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/ros-stream-rcs-jpeg-webrtc/ros_pub_stats.csv -p video:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/input.mrs_multi_floor_legged.mkv
+[0m[INFO] [1781828919.229310096] [ros_pub]: base video first frame ready, cycle capacity 150[0m
++ ros2 launch ros_camera_server_benchmarks rcs.launch.yaml config_path:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/ros-stream-rcs-jpeg-webrtc/rcs_config.yaml
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-06-19-02-28-41-148476-Stefan-TP-Ubuntu24-1539937
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [camera_server_standalone-1]: process started with pid [381059]
-[camera_server_standalone-1] [0m[INFO] [1778004701.909569302] [ros_camera_server]: Registered input type: openseekthermal[0m
-[camera_server_standalone-1] [0m[INFO] [1778004701.909588940] [ros_camera_server]: Registered input type: ros2[0m
-[camera_server_standalone-1] [0m[INFO] [1778004701.909591504] [ros_camera_server]: Registered input type: rtp[0m
-[camera_server_standalone-1] [0m[INFO] [1778004701.909593103] [ros_camera_server]: Registered input type: v4l2[0m
-[camera_server_standalone-1] [0m[INFO] [1778004701.926526271] [ros_camera_server]: Creating pipeline for camera: bench[0m
-[camera_server_standalone-1] [0m[INFO] [1778004701.930173962] [ros_camera_server]: Camera 'bench' Pipeline Graph:
+[INFO] [camera_server_standalone-1]: process started with pid [1539942]
+[camera_server_standalone-1] [0m[INFO] [1781828921.258119568] [ros_camera_server]: Registered input type: openseekthermal[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.258132972] [ros_camera_server]: Registered input type: ros2[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.258134862] [ros_camera_server]: Registered input type: rtp[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.258135901] [ros_camera_server]: Registered input type: v4l2[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.258136851] [ros_camera_server]: Registered input type: videotestsrc[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.266026405] [ros_camera_server]: Creating pipeline for camera: bench[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.267971614] [ros_camera_server]: Camera 'bench' Pipeline Graph:
 [camera_server_standalone-1] └── [0] Source(ros2)
 [camera_server_standalone-1]     └── [1] Framerate(30/1)
 [camera_server_standalone-1]         └── [2] Decode(jpeg)
-[camera_server_standalone-1]             └── [3] Encode(h264, NV)
+[camera_server_standalone-1]             └── [3] Encode(h264, VA_LP)
 [camera_server_standalone-1]                 └── [4] Output1(webrtc)
 [camera_server_standalone-1] [0m
-[camera_server_standalone-1] [0m[INFO] [1778004701.978466516] [ros_camera_server]: SmartVideoDecoder: Initialized with VA[0m
-[camera_server_standalone-1] [0m[INFO] [1778004701.979338678] [ros_camera_server]: Using nvh264enc encoder[0m
-[camera_server_standalone-1] [0m[INFO] [1778004703.397968351] [ros_camera_server]: WebRTC signaling server listening on ws://0.0.0.0:8443[0m
-[camera_server_standalone-1] [0m[INFO] [1778004703.397989747] [ros_camera_server]: WebRTC signaling endpoint registered: /bench/0[0m
-+ ros2 run ros_camera_server_benchmarks webrtc_recv --uri ws://127.0.0.1:8443/bench/0 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/ros-stream-rcs-jpeg-webrtc/stream.csv --warmup-frames 60 --max-frames 750
-+ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 381043 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/ros-stream-rcs-jpeg-webrtc/cpu.csv --interval-hz 2 --duration 15
-[camera_server_standalone-1] [0m[INFO] [1778004704.629515505] [ros_camera_server]: WebRTC client connected on path: /bench/0[0m
-[camera_server_standalone-1] [0m[INFO] [1778004704.629534606] [ros_camera_server]: WebRTC: new client connected on /bench/0[0m
-[camera_server_standalone-1] [33m[WARN] [1778004704.926188929] [ros_camera_server]: GStreamer log warning [webrtcbin] [bench:0 node=4]: Couldn't find mline 0 to merge ICE candidate[0m
-[camera_server_standalone-1] [33m[WARN] [1778004705.516723348] [ros_camera_server]: [bench/0] Capture time meta missing from buffer - encoder may have stripped it. This message is throttled.[0m
-[camera_server_standalone-1] [0m[INFO] [1778004711.926220798] [ros_camera_server]: Camera Server Status:
+[camera_server_standalone-1] [0m[INFO] [1781828921.314429014] [ros_camera_server]: SmartVideoDecoder: Initialized with VA[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.315361811] [ros_camera_server]: Using vah264lpenc encoder[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.319930584] [ros_camera_server]: WebRTC signaling server listening on ws://0.0.0.0:8443[0m
+[camera_server_standalone-1] [0m[INFO] [1781828921.319946150] [ros_camera_server]: WebRTC signaling endpoint registered: /bench/0[0m
++ ros2 run ros_camera_server_benchmarks webrtc_recv --uri ws://127.0.0.1:8443/bench/0 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/ros-stream-rcs-jpeg-webrtc/stream.csv --warmup-frames 60 --max-frames 900
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/helpers/cpu_sample.py --sids 1539937 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/ros-stream-rcs-jpeg-webrtc/cpu.csv --interval-hz 2 --duration 30
+[camera_server_standalone-1] [0m[INFO] [1781828924.074386380] [ros_camera_server]: WebRTC client connected on path: /bench/0[0m
+[camera_server_standalone-1] [0m[INFO] [1781828924.074408254] [ros_camera_server]: WebRTC: new client connected on /bench/0[0m
+[camera_server_standalone-1] [33m[WARN] [1781828925.340331438] [ros_camera_server]: [bench/0] Capture time meta missing from buffer - encoder may have stripped it. This message is throttled.[0m
+[camera_server_standalone-1] [0m[INFO] [1781828931.265758774] [ros_camera_server]: Camera Server Status:
 [camera_server_standalone-1] - bench
 [camera_server_standalone-1]     state: PLAYING
-[camera_server_standalone-1]     input fps: 30.6
+[camera_server_standalone-1]     input fps: 30.1
 [camera_server_standalone-1]     outputs:
-[camera_server_standalone-1]       - Output 1 (webrtc, h264@1280x720, encoder: nvh264enc):
+[camera_server_standalone-1]       - Output 1 (webrtc, h264@1920x1080, encoder: vah264lpenc):
 [camera_server_standalone-1]         status: active
-[camera_server_standalone-1]         fps: 30.7
-[camera_server_standalone-1]         processing time: 4.5ms (total since capture: 1.78e+12ms)
+[camera_server_standalone-1]         fps: 30.3
+[camera_server_standalone-1]         processing time: 9.1ms (total since capture: 1.78e+12ms)
+[camera_server_standalone-1]         clients: 1
+[camera_server_standalone-1] [0m
+[camera_server_standalone-1] [0m[INFO] [1781828941.265742317] [ros_camera_server]: Camera Server Status:
+[camera_server_standalone-1] - bench
+[camera_server_standalone-1]     state: PLAYING
+[camera_server_standalone-1]     input fps: 30.1
+[camera_server_standalone-1]     outputs:
+[camera_server_standalone-1]       - Output 1 (webrtc, h264@1920x1080, encoder: vah264lpenc):
+[camera_server_standalone-1]         status: active
+[camera_server_standalone-1]         fps: 30.3
+[camera_server_standalone-1]         processing time: 8.3ms (total since capture: 1.78e+12ms)
+[camera_server_standalone-1]         clients: 1
+[camera_server_standalone-1] [0m
+[camera_server_standalone-1] [0m[INFO] [1781828951.265774810] [ros_camera_server]: Camera Server Status:
+[camera_server_standalone-1] - bench
+[camera_server_standalone-1]     state: PLAYING
+[camera_server_standalone-1]     input fps: 30
+[camera_server_standalone-1]     outputs:
+[camera_server_standalone-1]       - Output 1 (webrtc, h264@1920x1080, encoder: vah264lpenc):
+[camera_server_standalone-1]         status: active
+[camera_server_standalone-1]         fps: 30.3
+[camera_server_standalone-1]         processing time: 9.6ms (total since capture: 1.78e+12ms)
 [camera_server_standalone-1]         clients: 1
 [camera_server_standalone-1] [0m
 [run_scenario] cleanup
-[0m[INFO] [1778004719.450251120] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+[0m[INFO] [1781828953.940247297] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
 webrtc_recv: websocket closed
-webrtc_recv: seen=419 decoded=419 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/ros-stream-rcs-jpeg-webrtc/stream.csv
+webrtc_recv: seen=857 decoded=857 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/ros-stream-rcs-jpeg-webrtc/stream.csv

@@ -22,7 +22,7 @@ launch:
   # the resolved encoder/bit_rate from run_scenario.sh.
   - arg: { name: "ffmpeg_encoder", default: "libx264" }
   - arg: { name: "ffmpeg_bitrate", default: "1000000" }
-  - arg: { name: "ffmpeg_gop", default: "10" }
+  - arg: { name: "ffmpeg_gop", default: "30" }
   # encoder_av_options is per-encoder low-latency tuning (preset/tune/etc).
   # Run scenarios pass BENCH_FFMPEG_AV_OPTS from env_fairness.sh.
   - arg: { name: "ffmpeg_av_options", default: "" }

@@ -1,24 +1,26 @@
-+ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_ros_raw -p topic:=/bench/out_raw -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-ros-usb_cam-yuv/ros_raw.csv -p warmup:=60 -p max_frames:=750
-+ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video10 --width 1280 --height 720 --fps 30 --format yuyv --duration 45 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-ros-usb_cam-yuv/frame_gen_stats.csv --video ../input.robocup_crossing_ramps.mp4 --video-cycle-seconds 60
-frame_gen: first base-video frame ready after 1614.5 ms (cycle capacity = 1800 frames)
-+ ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=30
-+ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 369536 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-ros-usb_cam-yuv/cpu.csv --interval-hz 2 --duration 15
-[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-20-06-38-476104-Stefan-TP-Ubuntu24-369536
++ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_ros_raw -p topic:=/bench/out_raw -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/cam-ros-usb_cam-yuv/ros_raw.csv -p warmup:=60 -p max_frames:=900
++ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video40 --width 1920 --height 1080 --fps 30 --format yuyv --duration 60 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/cam-ros-usb_cam-yuv/frame_gen_stats.csv --video /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/input.mrs_multi_floor_legged.mkv
+frame_gen: first base-video frame ready after 124.5 ms (cycle capacity = 1800 frames)
++ ros2 launch ros_camera_server_benchmarks usb_cam_only_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=1920 height:=1080 fps:=30
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/helpers/cpu_sample.py --sids 1535236 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/cam-ros-usb_cam-yuv/cpu.csv --interval-hz 2 --duration 30
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-06-19-02-26-49-497678-Stefan-TP-Ubuntu24-1535236
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [usb_cam_node_exe-1]: process started with pid [369543]
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.733589301] [usb_cam]: [/image_raw] new RTSP session at rtsp://192.168.238.101:47075/[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.739001865] [usb_cam]: camera_name value: default_cam[0m
-[usb_cam_node_exe-1] [33m[WARN] [1778004398.739015912] [usb_cam]: framerate: 30.000000[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.743222904] [usb_cam]: using default calibration URL[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.743236138] [usb_cam]: camera calibration URL: file:///home/stefan/.ros/camera_info/default_cam.yaml[0m
-[usb_cam_node_exe-1] [31m[ERROR] [1778004398.743256330] [camera_calibration_parsers]: Unable to open camera calibration file [/home/stefan/.ros/camera_info/default_cam.yaml][0m
-[usb_cam_node_exe-1] [33m[WARN] [1778004398.743278563] [usb_cam]: Camera calibration file /home/stefan/.ros/camera_info/default_cam.yaml not found[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.743494058] [usb_cam]: Starting 'default_cam' (/dev/video10) at 1280x720 via mmap (yuyv2rgb) at 30 FPS[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.743920923] [usb_cam]: Setting 'brightness' to 50[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.749842105] [usb_cam]: Setting 'white_balance_temperature_auto' to 1[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.749860995] [usb_cam]: Setting 'exposure_auto' to 3[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.751893759] [usb_cam]: Setting 'focus_auto' to 0[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778004398.754354772] [usb_cam]: Timer triggering every 33 ms[0m
+[INFO] [usb_cam_node_exe-1]: process started with pid [1535253]
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.880578528] [FFMPEGPublisher]: using libav encoder: libx264[0m
+[usb_cam_node_exe-1] [33m[WARN] [1781828809.880737416] [usb_cam]: gop_size not set, defaulting to 10. This may severely affect lag and performance![0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.886689758] [usb_cam]: [/image_raw] new RTSP session at rtsp://192.168.238.110:50007/[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.894927783] [usb_cam]: camera_name value: default_cam[0m
+[usb_cam_node_exe-1] [33m[WARN] [1781828809.894952945] [usb_cam]: framerate: 30.000000[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.901366825] [usb_cam]: using default calibration URL[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.901385673] [usb_cam]: camera calibration URL: file:///home/stefan/.ros/camera_info/default_cam.yaml[0m
+[usb_cam_node_exe-1] [31m[ERROR] [1781828809.901412332] [camera_calibration_parsers]: Unable to open camera calibration file [/home/stefan/.ros/camera_info/default_cam.yaml][0m
+[usb_cam_node_exe-1] [33m[WARN] [1781828809.901439587] [usb_cam]: Camera calibration file /home/stefan/.ros/camera_info/default_cam.yaml not found[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.901625611] [usb_cam]: Starting 'default_cam' (/dev/video40) at 1920x1080 via mmap (yuyv2rgb) at 30 FPS[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.902189591] [usb_cam]: Setting 'brightness' to 50[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.908449620] [usb_cam]: Setting 'white_balance_temperature_auto' to 1[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.908485956] [usb_cam]: Setting 'exposure_auto' to 3[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.911227501] [usb_cam]: Setting 'focus_auto' to 0[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781828809.914489697] [usb_cam]: Timer triggering every 33 ms[0m
 [run_scenario] cleanup
-[0m[INFO] [1778004413.163856151] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
-ros_recv: seen=432 decoded=432 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run8/cam-ros-usb_cam-yuv/ros_raw.csv
+[0m[INFO] [1781828839.095369654] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+ros_recv: seen=876 decoded=876 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run8/cam-ros-usb_cam-yuv/ros_raw.csv

@@ -1,69 +1,105 @@
-+ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video10 --width 1280 --height 720 --fps 30 --format yuyv --duration 45 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/frame_gen_stats.csv --video ../input.robocup_crossing_ramps.mp4 --video-cycle-seconds 60
-frame_gen: first base-video frame ready after 1623.1 ms (cycle capacity = 1800 frames)
-+ ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=30 rtsp_bitrate:=1000000
-[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-19-04-14-082098-Stefan-TP-Ubuntu24-224787
++ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video40 --width 1920 --height 1080 --fps 30 --format yuyv --duration 60 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/frame_gen_stats.csv --video /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/input.mrs_multi_floor_legged.mkv
+frame_gen: first base-video frame ready after 138.6 ms (cycle capacity = 1800 frames)
++ ros2 launch ros_camera_server_benchmarks rtsp_h264_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=1920 height:=1080 fps:=30 rtsp_bitrate:=1000000
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-06-19-00-29-20-985616-Stefan-TP-Ubuntu24-1246434
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [usb_cam_node_exe-1]: process started with pid [224803]
-[INFO] [republish-2]: process started with pid [224804]
-[republish-2] [0m[INFO] [1778000654.215700208] [rtsp_republisher]: The 'in_transport' parameter is set to: raw[0m
-[republish-2] [0m[INFO] [1778000654.215735487] [rtsp_republisher]: The 'out_transport' parameter is set to: [0m
-[republish-2] [0m[INFO] [1778000654.308141705] [rtsp_republisher]: [/out] new RTSP session at rtsp://192.168.238.101:33683/[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.318953892] [usb_cam]: [/image_raw] new RTSP session at rtsp://192.168.238.101:42247/[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.328099904] [usb_cam]: camera_name value: default_cam[0m
-[usb_cam_node_exe-1] [33m[WARN] [1778000654.328123792] [usb_cam]: framerate: 30.000000[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.329679814] [usb_cam]: using default calibration URL[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.329700996] [usb_cam]: camera calibration URL: file:///home/stefan/.ros/camera_info/default_cam.yaml[0m
-[usb_cam_node_exe-1] [31m[ERROR] [1778000654.329730998] [camera_calibration_parsers]: Unable to open camera calibration file [/home/stefan/.ros/camera_info/default_cam.yaml][0m
-[usb_cam_node_exe-1] [33m[WARN] [1778000654.329762028] [usb_cam]: Camera calibration file /home/stefan/.ros/camera_info/default_cam.yaml not found[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.330131033] [usb_cam]: Starting 'default_cam' (/dev/video10) at 1280x720 via mmap (yuyv2rgb) at 30 FPS[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.330740899] [usb_cam]: Setting 'brightness' to 50[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.338289317] [usb_cam]: Setting 'white_balance_temperature_auto' to 1[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.338312971] [usb_cam]: Setting 'exposure_auto' to 3[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.341798130] [usb_cam]: Setting 'focus_auto' to 0[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778000654.344956731] [usb_cam]: Timer triggering every 33 ms[0m
+[INFO] [usb_cam_node_exe-1]: process started with pid [1246450]
+[INFO] [republish-2]: process started with pid [1246451]
+[republish-2] [0m[INFO] [1781821761.115997181] [rtsp_republisher]: The 'in_transport' parameter is set to: raw[0m
+[republish-2] [0m[INFO] [1781821761.116077683] [rtsp_republisher]: The 'out_transport' parameter is set to: [0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.225729865] [FFMPEGPublisher]: using libav encoder: libx264[0m
+[usb_cam_node_exe-1] [33m[WARN] [1781821761.226250171] [usb_cam]: gop_size not set, defaulting to 10. This may severely affect lag and performance![0m
+[republish-2] [0m[INFO] [1781821761.227641003] [FFMPEGPublisher]: using libav encoder: libx264[0m
+[republish-2] [33m[WARN] [1781821761.227767448] [rtsp_republisher]: gop_size not set, defaulting to 10. This may severely affect lag and performance![0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.232530636] [usb_cam]: [/image_raw] new RTSP session at rtsp://192.168.238.110:39681/[0m
+[republish-2] [0m[INFO] [1781821761.235279590] [rtsp_republisher]: [/out] new RTSP session at rtsp://192.168.238.110:48581/[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.241672260] [usb_cam]: camera_name value: default_cam[0m
+[usb_cam_node_exe-1] [33m[WARN] [1781821761.242041689] [usb_cam]: framerate: 30.000000[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.246988481] [usb_cam]: using default calibration URL[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.247373082] [usb_cam]: camera calibration URL: file:///home/stefan/.ros/camera_info/default_cam.yaml[0m
+[usb_cam_node_exe-1] [31m[ERROR] [1781821761.247586846] [camera_calibration_parsers]: Unable to open camera calibration file [/home/stefan/.ros/camera_info/default_cam.yaml][0m
+[usb_cam_node_exe-1] [33m[WARN] [1781821761.247824384] [usb_cam]: Camera calibration file /home/stefan/.ros/camera_info/default_cam.yaml not found[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.248153534] [usb_cam]: Starting 'default_cam' (/dev/video40) at 1920x1080 via mmap (yuyv2rgb) at 30 FPS[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.249018174] [usb_cam]: Setting 'brightness' to 50[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.255413227] [usb_cam]: Setting 'white_balance_temperature_auto' to 1[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.255432493] [usb_cam]: Setting 'exposure_auto' to 3[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.257303526] [usb_cam]: Setting 'focus_auto' to 0[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781821761.259185204] [usb_cam]: Timer triggering every 33 ms[0m
 + ros2 topic hz /out
-+ bash -c ros2 topic echo --qos-durability transient_local                                     --qos-reliability reliable                                     --qos-history keep_last --qos-depth 1                                     '/out/rtsp' std_msgs/msg/String                     > '/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/rtsp_url.log' 2>&1
++ bash -c ros2 topic echo --qos-durability transient_local                                     --qos-reliability reliable                                     --qos-history keep_last --qos-depth 1                                     '/out/rtsp' std_msgs/msg/String                     > '/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/rtsp_url.log' 2>&1
+average rate: 30.161
+	min: 0.030s max: 0.037s std dev: 0.00112s window: 32
 + ros2 launch ros_camera_server_benchmarks rtsp_camera_proxy_recv.launch.yaml in_base:=/out out_topic:=/bench/rtsp_recv_image
-average rate: 30.042
-	min: 0.031s max: 0.035s std dev: 0.00049s window: 32
-[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-19-04-19-070071-Stefan-TP-Ubuntu24-225106
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-06-19-00-29-25-956185-Stefan-TP-Ubuntu24-1246792
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [republish-1]: process started with pid [225111]
-[republish-1] [0m[INFO] [1778000659.182420011] [rtsp_subscriber]: The 'in_transport' parameter is set to: raw[0m
-[republish-1] [0m[INFO] [1778000659.182499687] [rtsp_subscriber]: The 'out_transport' parameter is set to: [0m
-[republish-1] [0m[INFO] [1778000659.265864650] [rtsp_subscriber]: [/out] new RTSP session at rtsp://192.168.238.101:40411/[0m
-+ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_stream -p topic:=/bench/rtsp_recv_image -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/stream.csv -p warmup:=60 -p max_frames:=750
-+ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 224787 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/cpu.csv --interval-hz 2 --duration 15
+[INFO] [republish-1]: process started with pid [1246808]
+[republish-1] [0m[INFO] [1781821766.058197227] [rtsp_subscriber]: The 'in_transport' parameter is set to: raw[0m
+[republish-1] [0m[INFO] [1781821766.058255567] [rtsp_subscriber]: The 'out_transport' parameter is set to: [0m
+[republish-1] [0m[INFO] [1781821766.126251173] [FFMPEGPublisher]: using libav encoder: libx264[0m
+[republish-1] [33m[WARN] [1781821766.126745493] [rtsp_subscriber]: gop_size not set, defaulting to 10. This may severely affect lag and performance![0m
+[republish-1] [0m[INFO] [1781821766.133241921] [rtsp_subscriber]: [/out] new RTSP session at rtsp://192.168.238.110:46885/[0m
+average rate: 30.080
+	min: 0.028s max: 0.043s std dev: 0.00176s window: 62
++ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_stream -p topic:=/bench/rtsp_recv_image -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/stream.csv -p warmup:=60 -p max_frames:=900
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/helpers/cpu_sample.py --sids 1246434 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/cpu.csv --interval-hz 2 --duration 30
+average rate: 30.059
+	min: 0.028s max: 0.043s std dev: 0.00146s window: 93
+average rate: 30.053
+	min: 0.028s max: 0.043s std dev: 0.00129s window: 124
+average rate: 30.040
+	min: 0.028s max: 0.043s std dev: 0.00118s window: 154
+average rate: 30.038
+	min: 0.028s max: 0.043s std dev: 0.00111s window: 185
+average rate: 30.032
+	min: 0.028s max: 0.043s std dev: 0.00104s window: 215
+average rate: 30.027
+	min: 0.028s max: 0.043s std dev: 0.00100s window: 245
+average rate: 30.022
+	min: 0.028s max: 0.043s std dev: 0.00095s window: 276
 average rate: 30.017
-	min: 0.028s max: 0.037s std dev: 0.00100s window: 62
-average rate: 30.023
-	min: 0.028s max: 0.037s std dev: 0.00093s window: 93
-average rate: 30.019
-	min: 0.028s max: 0.037s std dev: 0.00084s window: 124
-average rate: 30.016
-	min: 0.028s max: 0.037s std dev: 0.00080s window: 155
+	min: 0.028s max: 0.043s std dev: 0.00097s window: 307
+average rate: 30.020
+	min: 0.028s max: 0.043s std dev: 0.00094s window: 338
+average rate: 30.018
+	min: 0.028s max: 0.043s std dev: 0.00091s window: 369
+average rate: 30.017
+	min: 0.028s max: 0.043s std dev: 0.00088s window: 400
+average rate: 30.015
+	min: 0.028s max: 0.043s std dev: 0.00086s window: 430
 average rate: 30.013
-	min: 0.028s max: 0.037s std dev: 0.00078s window: 186
+	min: 0.028s max: 0.043s std dev: 0.00085s window: 461
+average rate: 30.013
+	min: 0.028s max: 0.043s std dev: 0.00084s window: 492
+average rate: 30.013
+	min: 0.028s max: 0.043s std dev: 0.00082s window: 523
+average rate: 30.012
+	min: 0.028s max: 0.043s std dev: 0.00080s window: 553
+average rate: 30.011
+	min: 0.028s max: 0.043s std dev: 0.00078s window: 583
+average rate: 30.011
+	min: 0.028s max: 0.043s std dev: 0.00077s window: 614
 average rate: 30.010
-	min: 0.028s max: 0.037s std dev: 0.00074s window: 216
+	min: 0.028s max: 0.043s std dev: 0.00075s window: 645
 average rate: 30.010
-	min: 0.028s max: 0.037s std dev: 0.00070s window: 247
+	min: 0.028s max: 0.043s std dev: 0.00074s window: 676
+average rate: 30.010
+	min: 0.028s max: 0.043s std dev: 0.00073s window: 706
+average rate: 30.009
+	min: 0.028s max: 0.043s std dev: 0.00072s window: 736
+average rate: 30.009
+	min: 0.028s max: 0.043s std dev: 0.00071s window: 767
 average rate: 30.008
-	min: 0.028s max: 0.037s std dev: 0.00067s window: 278
+	min: 0.028s max: 0.043s std dev: 0.00070s window: 798
 average rate: 30.008
-	min: 0.028s max: 0.037s std dev: 0.00070s window: 309
+	min: 0.028s max: 0.043s std dev: 0.00070s window: 829
+average rate: 30.008
+	min: 0.028s max: 0.043s std dev: 0.00069s window: 859
+average rate: 30.006
+	min: 0.028s max: 0.043s std dev: 0.00068s window: 889
 average rate: 30.007
-	min: 0.028s max: 0.037s std dev: 0.00068s window: 340
-average rate: 30.005
-	min: 0.028s max: 0.037s std dev: 0.00069s window: 370
-average rate: 30.006
-	min: 0.028s max: 0.037s std dev: 0.00067s window: 401
-average rate: 30.006
-	min: 0.028s max: 0.037s std dev: 0.00065s window: 432
-average rate: 29.996
-	min: 0.028s max: 0.038s std dev: 0.00068s window: 462
-average rate: 30.004
-	min: 0.028s max: 0.038s std dev: 0.00069s window: 493
+	min: 0.028s max: 0.043s std dev: 0.00067s window: 920
+average rate: 30.007
+	min: 0.028s max: 0.043s std dev: 0.00067s window: 951
 [run_scenario] cleanup
-[0m[INFO] [1778000674.808585304] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
-ros_recv: seen=445 decoded=445 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/stream.csv
+[0m[INFO] [1781821796.742697554] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+ros_recv: seen=895 decoded=895 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run2/cam-stream-usb_cam+rtsp_fkie-yuv-h264/stream.csv

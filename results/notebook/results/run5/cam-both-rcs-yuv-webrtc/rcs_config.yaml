@@ -6,9 +6,9 @@ cameras:
     name: "bench_v4l2_yuv_both_webrtc"
     input:
       type: v4l2
-      device: "/dev/video10"
-      width: 1280
-      height: 720
+      device: "/dev/video40"
+      width: 1920
+      height: 1080
       framerate: "30/1"
     # cam-both-rcs-yuv-webrtc: ROS topic + WebRTC stream from one camera.
     # webrtc_recv connects to ws://127.0.0.1:8443/bench/1 (output index 1
@@ -22,6 +22,6 @@ cameras:
         format: "rgb8"
       - type: webrtc
         codec: h264
-        encoder: NV
+        encoder: VA_LP
         framerate: "30/1"
         bitrate: 1000

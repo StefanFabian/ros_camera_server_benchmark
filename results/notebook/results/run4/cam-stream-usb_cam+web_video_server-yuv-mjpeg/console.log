@@ -1,36 +1,38 @@
-+ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video10 --width 1280 --height 720 --fps 30 --format yuyv --duration 45 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/cam-stream-usb_cam+web_video_server-yuv-mjpeg/frame_gen_stats.csv --video ../input.robocup_crossing_ramps.mp4 --video-cycle-seconds 60
-frame_gen: first base-video frame ready after 1569.7 ms (cycle capacity = 1800 frames)
-+ ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_yuv.launch.yaml device:=/dev/video10 image_topic:=/bench/out_raw fps:=30 wvs_port:=8888
-[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-19-25-48-319331-Stefan-TP-Ubuntu24-274634
++ ros2 run ros_camera_server_benchmarks frame_gen --device /dev/video40 --width 1920 --height 1080 --fps 30 --format yuyv --duration 60 --underrun-csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run4/cam-stream-usb_cam+web_video_server-yuv-mjpeg/frame_gen_stats.csv --video /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/input.mrs_multi_floor_legged.mkv
+frame_gen: first base-video frame ready after 113.6 ms (cycle capacity = 1800 frames)
++ ros2 launch ros_camera_server_benchmarks web_video_server_mjpeg_yuv.launch.yaml device:=/dev/video40 image_topic:=/bench/out_raw width:=1920 height:=1080 fps:=30 wvs_port:=8888
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-06-19-01-10-42-813772-Stefan-TP-Ubuntu24-1348143
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [usb_cam_node_exe-1]: process started with pid [274638]
-[INFO] [web_video_server-2]: process started with pid [274639]
-[web_video_server-2] [0m[INFO] [1778001948.452414679] [web_video_server]: Loading streamer plugin: web_video_server/stream/h264[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.568626703] [usb_cam]: [/image_raw] new RTSP session at rtsp://192.168.238.101:48473/[0m
-[web_video_server-2] [0m[INFO] [1778001948.569480490] [web_video_server]: Loading streamer plugin: web_video_server/stream/mjpeg[0m
-[web_video_server-2] [0m[INFO] [1778001948.569516600] [web_video_server]: Loading streamer plugin: web_video_server/stream/png[0m
-[web_video_server-2] [0m[INFO] [1778001948.569529569] [web_video_server]: Loading streamer plugin: web_video_server/stream/ros_compressed[0m
-[web_video_server-2] [0m[INFO] [1778001948.569549348] [web_video_server]: Loading streamer plugin: web_video_server/stream/vp8[0m
-[web_video_server-2] [0m[INFO] [1778001948.569561032] [web_video_server]: Loading streamer plugin: web_video_server/stream/vp9[0m
-[web_video_server-2] [0m[INFO] [1778001948.569572486] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/jpeg[0m
-[web_video_server-2] [0m[INFO] [1778001948.569797092] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/png[0m
-[web_video_server-2] [0m[INFO] [1778001948.569808961] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/ros_compressed[0m
-[web_video_server-2] [0m[INFO] [1778001948.569887275] [web_video_server]: Waiting For connections on 0.0.0.0:8888[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.582680412] [usb_cam]: camera_name value: default_cam[0m
-[usb_cam_node_exe-1] [33m[WARN] [1778001948.583060165] [usb_cam]: framerate: 30.000000[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.587314646] [usb_cam]: using default calibration URL[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.587340995] [usb_cam]: camera calibration URL: file:///home/stefan/.ros/camera_info/default_cam.yaml[0m
-[usb_cam_node_exe-1] [31m[ERROR] [1778001948.587381431] [camera_calibration_parsers]: Unable to open camera calibration file [/home/stefan/.ros/camera_info/default_cam.yaml][0m
-[usb_cam_node_exe-1] [33m[WARN] [1778001948.587415939] [usb_cam]: Camera calibration file /home/stefan/.ros/camera_info/default_cam.yaml not found[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.587871825] [usb_cam]: Starting 'default_cam' (/dev/video10) at 1280x720 via mmap (yuyv2rgb) at 30 FPS[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.588530276] [usb_cam]: Setting 'brightness' to 50[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.595894030] [usb_cam]: Setting 'white_balance_temperature_auto' to 1[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.595919290] [usb_cam]: Setting 'exposure_auto' to 3[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.599387771] [usb_cam]: Setting 'focus_auto' to 0[0m
-[usb_cam_node_exe-1] [0m[INFO] [1778001948.602746998] [usb_cam]: Timer triggering every 33 ms[0m
-+ ros2 run ros_camera_server_benchmarks gst_recv --mode http-mjpeg --uri http://127.0.0.1:8888/stream?topic=/bench/out_raw&type=mjpeg --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/cam-stream-usb_cam+web_video_server-yuv-mjpeg/stream.csv --warmup-frames 60 --max-frames 750
-+ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 274634 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/cam-stream-usb_cam+web_video_server-yuv-mjpeg/cpu.csv --interval-hz 2 --duration 15
-[web_video_server-2] [0m[INFO] [1778001953.210646895] [web_video_server]: Handling Request: /stream?topic=/bench/out_raw&type=mjpeg[0m
-[web_video_server-2] [0m[INFO] [1778001953.210771963] [web_video_server.mjpeg_streamer]: Streaming topic /bench/out_raw with QoS profile default[0m
+[INFO] [usb_cam_node_exe-1]: process started with pid [1348161]
+[INFO] [web_video_server-2]: process started with pid [1348162]
+[web_video_server-2] [0m[INFO] [1781824242.938648342] [web_video_server]: Loading streamer plugin: web_video_server/stream/h264[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.038931891] [FFMPEGPublisher]: using libav encoder: libx264[0m
+[usb_cam_node_exe-1] [33m[WARN] [1781824243.039474128] [usb_cam]: gop_size not set, defaulting to 10. This may severely affect lag and performance![0m
+[web_video_server-2] [0m[INFO] [1781824243.044584641] [web_video_server]: Loading streamer plugin: web_video_server/stream/mjpeg[0m
+[web_video_server-2] [0m[INFO] [1781824243.044622011] [web_video_server]: Loading streamer plugin: web_video_server/stream/png[0m
+[web_video_server-2] [0m[INFO] [1781824243.044632044] [web_video_server]: Loading streamer plugin: web_video_server/stream/ros_compressed[0m
+[web_video_server-2] [0m[INFO] [1781824243.044644578] [web_video_server]: Loading streamer plugin: web_video_server/stream/vp8[0m
+[web_video_server-2] [0m[INFO] [1781824243.044654029] [web_video_server]: Loading streamer plugin: web_video_server/stream/vp9[0m
+[web_video_server-2] [0m[INFO] [1781824243.044663416] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/jpeg[0m
+[web_video_server-2] [0m[INFO] [1781824243.044930102] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/png[0m
+[web_video_server-2] [0m[INFO] [1781824243.044939414] [web_video_server]: Loading streamer plugin: web_video_server/snapshot/ros_compressed[0m
+[web_video_server-2] [0m[INFO] [1781824243.045006144] [web_video_server]: Waiting For connections on 0.0.0.0:8888[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.045141182] [usb_cam]: [/image_raw] new RTSP session at rtsp://192.168.238.110:59365/[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.052065920] [usb_cam]: camera_name value: default_cam[0m
+[usb_cam_node_exe-1] [33m[WARN] [1781824243.052087332] [usb_cam]: framerate: 30.000000[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.054020576] [usb_cam]: using default calibration URL[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.054037884] [usb_cam]: camera calibration URL: file:///home/stefan/.ros/camera_info/default_cam.yaml[0m
+[usb_cam_node_exe-1] [31m[ERROR] [1781824243.054062436] [camera_calibration_parsers]: Unable to open camera calibration file [/home/stefan/.ros/camera_info/default_cam.yaml][0m
+[usb_cam_node_exe-1] [33m[WARN] [1781824243.054088546] [usb_cam]: Camera calibration file /home/stefan/.ros/camera_info/default_cam.yaml not found[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.054344194] [usb_cam]: Starting 'default_cam' (/dev/video40) at 1920x1080 via mmap (yuyv2rgb) at 30 FPS[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.055164848] [usb_cam]: Setting 'brightness' to 50[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.060051743] [usb_cam]: Setting 'white_balance_temperature_auto' to 1[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.060082524] [usb_cam]: Setting 'exposure_auto' to 3[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.062968862] [usb_cam]: Setting 'focus_auto' to 0[0m
+[usb_cam_node_exe-1] [0m[INFO] [1781824243.066049269] [usb_cam]: Timer triggering every 33 ms[0m
++ ros2 run ros_camera_server_benchmarks gst_recv --mode http-mjpeg --uri http://127.0.0.1:8888/stream?topic=/bench/out_raw&type=mjpeg --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run4/cam-stream-usb_cam+web_video_server-yuv-mjpeg/stream.csv --warmup-frames 60 --max-frames 900
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/helpers/cpu_sample.py --sids 1348143 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run4/cam-stream-usb_cam+web_video_server-yuv-mjpeg/cpu.csv --interval-hz 2 --duration 30
+[web_video_server-2] [0m[INFO] [1781824247.598285102] [web_video_server]: Handling Request: /stream?topic=/bench/out_raw&type=mjpeg[0m
+[web_video_server-2] [0m[INFO] [1781824247.598413384] [web_video_server.mjpeg_streamer]: Streaming topic /bench/out_raw with QoS profile default[0m
 [run_scenario] cleanup
-gst_recv[http-mjpeg]: seen=444 decoded=444 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run4/cam-stream-usb_cam+web_video_server-yuv-mjpeg/stream.csv
+gst_recv[http-mjpeg]: seen=896 decoded=896 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run4/cam-stream-usb_cam+web_video_server-yuv-mjpeg/stream.csv

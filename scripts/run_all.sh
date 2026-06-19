@@ -111,14 +111,34 @@ source "${HERE}/helpers/resolve_encoder.sh"
 fail=0
 skipped=0
 declare -A skipped_scenarios=()
+
+# Fisher-Yates shuffle of a named array, using $RANDOM. Set BENCH_SEED for a
+# reproducible matrix (each repeat reseeded as BENCH_SEED+r so repeats differ
+# but the whole run replays); leave it unset for true randomness per run.
+shuffle_in_place() {
+  local -n _arr="$1"
+  local i j tmp
+  for (( i = ${#_arr[@]} - 1; i > 0; i-- )); do
+    j=$(( RANDOM % (i + 1) ))
+    tmp="${_arr[i]}"; _arr[i]="${_arr[j]}"; _arr[j]="${tmp}"
+  done
+}
+
 # Round-robin repeats so each scenario's reps are spread across the whole
-# matrix run window: rep 1 of every scenario first, then rep 2 of every
-# scenario, etc. Without this a 29*5 matrix would run scenario A's 5 reps
-# back-to-back on a cool host, and scenario Z's 5 reps last on a hot host —
-# cross-scenario thermal drift contaminates the comparison even though
-# repeat-tightness within a scenario looks good.
+# matrix run window: every scenario runs once per repeat, then again the next
+# repeat. The per-repeat order is shuffled so no scenario is pinned to the
+# same slot every time. Without round-robin, a 29*5 matrix would run scenario
+# A's 5 reps back-to-back on a cool host and scenario Z's 5 reps last on a hot
+# host. Round-robin alone still leaves each scenario in a fixed position
+# within every repeat, so its position bias (early=cool, late=hot) survives
+# averaging; shuffling each repeat's order spreads every scenario's slots
+# across the run so cross-scenario thermal drift averages out.
 for r in $(seq 1 "${REPEATS}"); do
-  for s in "${SCENARIOS[@]}"; do
+  order=("${SCENARIOS[@]}")
+  [[ -n "${BENCH_SEED:-}" ]] && RANDOM=$((BENCH_SEED + r))
+  shuffle_in_place order
+  echo "==== repeat ${r}/${REPEATS} order: ${order[*]} ===="
+  for s in "${order[@]}"; do
     # Skip subsequent repeats once we know a scenario's dependency is
     # missing; the second run won't magically install the package.
     if [[ -n "${skipped_scenarios[$s]:-}" ]]; then

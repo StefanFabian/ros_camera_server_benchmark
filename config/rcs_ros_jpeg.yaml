@@ -15,5 +15,5 @@ cameras:
         host: "127.0.0.1"
         port: 7100
         bitrate: 1000
-        width: 1280
-        height: 720
+        width: ${BENCH_WIDTH}
+        height: ${BENCH_HEIGHT}

@@ -84,7 +84,7 @@ source install/setup.bash
 `/dev/video40` (YUYV) + `/dev/video41` (MJPEG):
 
 ```bash
-sudo ./setup_loopback.sh
+sudo ./scripts/setup_loopback.sh
 ```
 
 ### CPU governor
@@ -127,12 +127,13 @@ column -ts, results/run1/report.csv | less -S
 sudo modprobe -r v4l2loopback
 sudo bash ros_camera_server_benchmarks/scripts/setup_loopback.sh
 source ~/workspaces/claude/setup.bash
-BENCH_VIDEO=ros_camera_server_benchmarks/input.robocup_crossing_ramps.mp4 \
-  BENCH_VIDEO_CYCLE_S=15 \
+BENCH_VIDEO=ros_camera_server_benchmarks/input.mrs_multi_floor_legged.mkv \
+  BENCH_REPEATS=20 \
   bash ros_camera_server_benchmarks/scripts/run_all.sh
-# (BENCH_DURATION=15, BENCH_WARMUP_FRAMES=60, BENCH_MAX_FRAMES=750,
-# BENCH_REPEATS=5 are the run_scenario.sh defaults — overrides only
-# needed if you want a longer/shorter window.)
+# (BENCH_DURATION=30, BENCH_WARMUP_FRAMES=60, BENCH_MAX_FRAMES=900 are
+# the run_scenario.sh defaults — overrides only needed for a
+# longer/shorter window. The published tables used BENCH_REPEATS=20;
+# run_all.sh otherwise defaults to 5.)
 # HW Encoder is automatically chosen. If both available, user is asked.
 # Use BENCH_ENCODER=va or BENCH_ENCODER=nv to select and skip input.
 python3 ros_camera_server_benchmarks/scripts/bench_summary.py \
@@ -175,15 +176,15 @@ detail stays in `summary.json` only.
 | --------------------------- | ------------------------------ | ------------------------------------------------------------------------------ |
 | `BENCH_ENCODER`             | (auto / prompt)                | `va`/`nv`/`mpp`. Selects H.264 encoder family across every stack-under-test.   |
 | `BENCH_VIDEO`               | (synthetic flat-gray)          | Path to a video file overlaid behind the marker strip.                         |
-| `BENCH_VIDEO_CYCLE_S`       | `5`                            | Seconds of decoded video the loader caches before looping.                     |
-| `BENCH_DURATION`            | `15`                           | Per-scenario run duration in seconds.                                          |
+| `BENCH_VIDEO_CYCLE_S`       | `30`                           | Seconds of decoded video the loader caches before looping.                     |
+| `BENCH_DURATION`            | `30`                           | Per-scenario run duration in seconds.                                          |
 | `BENCH_WARMUP_FRAMES`       | `60`                           | Frames discarded at the start of each run.                                     |
-| `BENCH_MAX_FRAMES`          | `750`                          | Cap on frames recorded per run after warmup.                                   |
+| `BENCH_MAX_FRAMES`          | `900`                          | Cap on frames recorded per run after warmup.                                   |
 | `BENCH_REPEATS`             | `5`                            | Number of repeats per scenario in `run_all.sh`.                                |
 | `BENCH_GROUP`               | (all)                          | Filter for `run_all.sh`: `cam-ros` / `cam-stream` / `ros-stream` / `cam-both`. |
 | `BENCH_RESULTS_DIR`         | `${PWD}/results`               | Where per-run output is written.                                               |
-| `BENCH_WIDTH`               | `1280`                         | Frame width in px.                                                             |
-| `BENCH_HEIGHT`              | `720`                          | Frame height in px.                                                            |
+| `BENCH_WIDTH`               | `1920`                         | Frame width in px.                                                             |
+| `BENCH_HEIGHT`              | `1080`                         | Frame height in px.                                                            |
 | `BENCH_FPS`                 | `30`                           | Producer frame rate.                                                           |
 | `BENCH_BITRATE`             | `1000`                         | H.264 bitrate in kbps.                                                         |
 | `BENCH_RTP_PORT`            | `7100`                         | UDP-RTP data port (RTCP lands on port+1).                                      |

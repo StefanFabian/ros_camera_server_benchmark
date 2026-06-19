@@ -144,9 +144,9 @@ and discarded — harmless for localhost benches.
 The exact pipelines under test, for reference. The encoder line is
 the shared `BENCH_ENC_GST` fragment built by `env_fairness.sh` from
 the selected family (VA_LP shown below; the NV variant is
-`nvh264enc preset=4 bitrate=1000 gop-size=10 strict-gop=true rc-mode=3
+`nvh264enc preset=4 bitrate=1000 gop-size=30 strict-gop=true rc-mode=3
 min-force-key-unit-interval=1000000000 spatial-aq=true zerolatency=true
-aud=true`; the MPP variant is `mpph264enc bps=1000000 gop=10
+aud=true`; the MPP variant is `mpph264enc bps=1000000 gop=30
 header-mode=1 profile=66 rc-mode=0 max-pending=1
 min-force-key-unit-interval=1000000000 zero-copy-pkt=true` — `bps`
 takes bits-per-second on the Rockchip plugin while VA/NV `bitrate`
@@ -164,9 +164,9 @@ tokenization rules for `executable.cmd`.
 
 ```text
 v4l2src device=/dev/video40 io-mode=mmap do-timestamp=true
-  ! video/x-raw,format=YUY2,width=1280,height=720,framerate=30/1
+  ! video/x-raw,format=YUY2,width=1920,height=1080,framerate=30/1
   ! videoconvert ! video/x-raw,format=NV12
-  ! vah264lpenc bitrate=1000 key-int-max=10 aud=true
+  ! vah264lpenc bitrate=1000 key-int-max=30 aud=true
                 min-force-key-unit-interval=1000000000 num-slices=1
                 cabac=true dct8x8=true rate-control=vbr ref-frames=1
   ! rtph264pay aggregate-mode=0 mtu=1300 config-interval=-1
@@ -219,7 +219,7 @@ and plumbs the negotiated H.264 RTP stream through
 
 ## Fairness
 
-- **Same operating point** across all stacks: 1280x720 @ 30 fps,
+- **Same operating point** across all stacks: 1920x1080 @ 30 fps,
   1 Mbps bitrate, RTP port 7100. Override via `BENCH_*` env vars (see
   [REPRODUCING.md](REPRODUCING.md)).
 - **Encoder family pinned at run time.** `BENCH_ENCODER=va` selects
@@ -272,10 +272,12 @@ and plumbs the negotiated H.264 RTP stream through
   sensor_data default. Each downstream stack (RCS, gst_bridge,
   web_video_server, rtsp_pub) sees the same producer-side QoS so
   internal queueing is compared on equal footing.
-- **2 s warmup dropped, up to 750 frames recorded per run, 5 repeats
-  per scenario.** Defaults in `run_scenario.sh` are
-  `BENCH_WARMUP_FRAMES=60`, `BENCH_DURATION=15`, `BENCH_MAX_FRAMES=750`,
-  `BENCH_REPEATS=5`.
+- **2 s warmup dropped, up to 900 frames recorded per run, 20 repeats
+  per scenario for the published numbers.** Defaults in
+  `run_scenario.sh` are `BENCH_WARMUP_FRAMES=60`, `BENCH_DURATION=30`,
+  `BENCH_MAX_FRAMES=900`; `run_all.sh` defaults to `BENCH_REPEATS=5`
+  (the notebook in [RESULTS.md](RESULTS.md) was run with
+  `BENCH_REPEATS=20`).
 - **CPU governor expected at `performance`.** Default Ubuntu governors
   (`schedutil`, `powersave`) ramp cores up/down per-tick, adding wake-up
   jitter to receiver dispatch and noise to `cpu.csv`. The runner warns
@@ -295,8 +297,7 @@ the marker strip:
 
 ```bash
 BENCH_VIDEO=/path/to/highmotion.mp4 \
-  BENCH_VIDEO_CYCLE_S=5 \
-  BENCH_REPEATS=5 \
+  BENCH_REPEATS=20 \
   ros2 run ros_camera_server_benchmarks run_all.sh
 ```
 
@@ -307,7 +308,7 @@ The producer blocks on the *first* decoded frame (~one decode latency,
 typically <300 ms with VA-API), then ticks at `BENCH_FPS`, sourcing
 each frame from the streaming buffer. Once `BENCH_VIDEO_CYCLE_S * fps`
 frames are decoded the loader stops and the producer loops the cycle
-(default 5 s = 150 frames at 30 fps, ~200 MB at 720p). The marker
+(default 5 s = 150 frames at 30 fps, ~445 MB at 1080p). The marker
 strip is overlaid on top of each frame's Y plane, so the marker is
 unaffected by the underlying content.
 

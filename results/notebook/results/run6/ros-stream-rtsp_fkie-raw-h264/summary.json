@@ -1,35 +1,35 @@
 {
   "scenario": "ros-stream-rtsp_fkie-raw-h264",
-  "duration_s": 15,
+  "duration_s": 30,
   "warmup_frames": 60,
-  "expected_after_warmup": 390,
+  "expected_after_warmup": 840,
   "stream": {
-    "count": 385,
-    "expected": 390,
-    "frame_loss": 0.012820512820512775,
-    "fps_effective": 30.000036424262976,
-    "mean_ms": 5.006544747598627,
-    "stddev_ms": 0.6064183989366673,
-    "p50_ms": 4.835084183962264,
-    "p95_ms": 5.825267983962264,
-    "p99_ms": 8.36272774396226,
-    "max_ms": 10.323359183962264,
-    "p50_ms_raw": 7.1094,
-    "p95_ms_raw": 8.0995838,
-    "p99_ms_raw": 10.637043559999995,
-    "mean_ms_raw": 7.280860563636363,
-    "max_ms_raw": 12.597675,
-    "producer_encode_mean_ms": 2.2743158160377357,
-    "first_id": 251,
-    "last_id": 635,
+    "count": 835,
+    "expected": 840,
+    "frame_loss": 0.005952380952380931,
+    "fps_effective": 30.000762158570996,
+    "mean_ms": 11.504420862138975,
+    "stddev_ms": 0.5382110114154461,
+    "p50_ms": 11.410248990282685,
+    "p95_ms": 12.367734090282681,
+    "p99_ms": 13.709855370282686,
+    "max_ms": 17.419390990282686,
+    "p50_ms_raw": 16.273587,
+    "p95_ms_raw": 17.231072099999995,
+    "p99_ms_raw": 18.57319338,
+    "mean_ms_raw": 16.36775887185629,
+    "max_ms_raw": 22.282729,
+    "producer_encode_mean_ms": 4.863338009717315,
+    "first_id": 296,
+    "last_id": 1130,
     "gap_count": 0,
-    "seen": 445,
-    "decoded": 445,
+    "seen": 895,
+    "decoded": 895,
     "decoded_ratio": 1.0
   },
   "ros_raw": {
     "count": 0,
-    "expected": 390,
+    "expected": 840,
     "frame_loss": null,
     "fps_effective": null,
     "mean_ms": null,
@@ -43,7 +43,7 @@
     "p99_ms_raw": null,
     "mean_ms_raw": null,
     "max_ms_raw": null,
-    "producer_encode_mean_ms": 2.2743158160377357,
+    "producer_encode_mean_ms": 4.863338009717315,
     "first_id": null,
     "last_id": null,
     "gap_count": null,
@@ -53,7 +53,7 @@
   },
   "ros_jpeg": {
     "count": 0,
-    "expected": 390,
+    "expected": 840,
     "frame_loss": null,
     "fps_effective": null,
     "mean_ms": null,
@@ -67,7 +67,7 @@
     "p99_ms_raw": null,
     "mean_ms_raw": null,
     "max_ms_raw": null,
-    "producer_encode_mean_ms": 2.2743158160377357,
+    "producer_encode_mean_ms": 4.863338009717315,
     "first_id": null,
     "last_id": null,
     "gap_count": null,
@@ -79,23 +79,23 @@
     "ros2": {
       "mean_pct": 0.0,
       "p95_pct": 0.0,
-      "n": 26
+      "n": 56
     },
     "republish": {
-      "mean_pct": 5.538461538461538,
-      "p95_pct": 6.0,
-      "n": 26
+      "mean_pct": 12.428571428571429,
+      "p95_pct": 14.0,
+      "n": 56
     },
     "_total": {
-      "mean_pct": 5.538461538461538,
-      "p95_pct": 6.0,
-      "n": 26
+      "mean_pct": 12.428571428571429,
+      "p95_pct": 14.0,
+      "n": 56
     }
   },
   "producer": {
-    "frames_produced": 636,
-    "encode_count": 636,
-    "encode_total_ns": 1446464859,
-    "encode_max_ns": 5017009
+    "frames_produced": 1132,
+    "encode_count": 1132,
+    "encode_total_ns": 5505298627,
+    "encode_max_ns": 13836220
   }
 }

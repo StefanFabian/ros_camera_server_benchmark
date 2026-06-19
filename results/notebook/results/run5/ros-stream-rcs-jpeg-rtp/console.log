@@ -1,40 +1,50 @@
-+ ros2 run ros_camera_server_benchmarks gst_recv --mode udp-rtp --uri udp://127.0.0.1:7100 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/ros-stream-rcs-jpeg-rtp/stream.csv --warmup-frames 60 --max-frames 750
-+ ros2 run ros_camera_server_benchmarks ros_pub --ros-args -p kind:=compressed -p topic:=/bench/image_compressed/compressed -p width:=1280 -p height:=720 -p fps:=30 -p encode_stats:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/ros-stream-rcs-jpeg-rtp/ros_pub_stats.csv -p video:=../input.robocup_crossing_ramps.mp4 -p video_cycle_seconds:=60
-[0m[INFO] [1778002679.517944677] [ros_pub]: base video first frame ready, cycle capacity 1800[0m
-+ ros2 launch ros_camera_server_benchmarks rcs.launch.yaml config_path:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/ros-stream-rcs-jpeg-rtp/rcs_config.yaml
-+ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 302966 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/ros-stream-rcs-jpeg-rtp/cpu.csv --interval-hz 2 --duration 15
-[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-19-38-00-062894-Stefan-TP-Ubuntu24-302966
++ ros2 run ros_camera_server_benchmarks gst_recv --mode udp-rtp --uri udp://127.0.0.1:7100 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run5/ros-stream-rcs-jpeg-rtp/stream.csv --warmup-frames 60 --max-frames 900
++ ros2 run ros_camera_server_benchmarks ros_pub --ros-args -p kind:=compressed -p topic:=/bench/image_compressed/compressed -p width:=1920 -p height:=1080 -p fps:=30 -p encode_stats:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run5/ros-stream-rcs-jpeg-rtp/ros_pub_stats.csv -p video:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/input.mrs_multi_floor_legged.mkv
+[0m[INFO] [1781825702.977187409] [ros_pub]: base video first frame ready, cycle capacity 150[0m
++ ros2 launch ros_camera_server_benchmarks rcs.launch.yaml config_path:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run5/ros-stream-rcs-jpeg-rtp/rcs_config.yaml
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/helpers/cpu_sample.py --sids 1408392 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run5/ros-stream-rcs-jpeg-rtp/cpu.csv --interval-hz 2 --duration 30
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-06-19-01-35-04-913479-Stefan-TP-Ubuntu24-1408392
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [camera_server_standalone-1]: process started with pid [302972]
-[camera_server_standalone-1] [0m[INFO] [1778002680.203949244] [ros_camera_server]: Registered input type: openseekthermal[0m
-[camera_server_standalone-1] [0m[INFO] [1778002680.203971200] [ros_camera_server]: Registered input type: ros2[0m
-[camera_server_standalone-1] [0m[INFO] [1778002680.203973703] [ros_camera_server]: Registered input type: rtp[0m
-[camera_server_standalone-1] [0m[INFO] [1778002680.203975530] [ros_camera_server]: Registered input type: v4l2[0m
-[camera_server_standalone-1] [0m[INFO] [1778002680.219489359] [ros_camera_server]: Creating pipeline for camera: bench[0m
-[camera_server_standalone-1] [0m[INFO] [1778002680.222752568] [ros_camera_server]: Camera 'bench' Pipeline Graph:
+[INFO] [camera_server_standalone-1]: process started with pid [1408423]
+[camera_server_standalone-1] [0m[INFO] [1781825705.021055063] [ros_camera_server]: Registered input type: openseekthermal[0m
+[camera_server_standalone-1] [0m[INFO] [1781825705.021073786] [ros_camera_server]: Registered input type: ros2[0m
+[camera_server_standalone-1] [0m[INFO] [1781825705.021075375] [ros_camera_server]: Registered input type: rtp[0m
+[camera_server_standalone-1] [0m[INFO] [1781825705.021076344] [ros_camera_server]: Registered input type: v4l2[0m
+[camera_server_standalone-1] [0m[INFO] [1781825705.021077335] [ros_camera_server]: Registered input type: videotestsrc[0m
+[camera_server_standalone-1] [0m[INFO] [1781825705.028752350] [ros_camera_server]: Creating pipeline for camera: bench[0m
+[camera_server_standalone-1] [0m[INFO] [1781825705.031550631] [ros_camera_server]: Camera 'bench' Pipeline Graph:
 [camera_server_standalone-1] └── [0] Source(ros2)
 [camera_server_standalone-1]     └── [1] Framerate(30/1)
 [camera_server_standalone-1]         └── [2] Decode(jpeg)
-[camera_server_standalone-1]             └── [3] Scale(1280x720)
-[camera_server_standalone-1]                 └── [4] Encode(h264, NV)
+[camera_server_standalone-1]             └── [3] Scale(1920x1080)
+[camera_server_standalone-1]                 └── [4] Encode(h264, VA_LP)
 [camera_server_standalone-1]                     └── [5] Output1(rtp)
 [camera_server_standalone-1] [0m
-[camera_server_standalone-1] [0m[INFO] [1778002680.262659349] [ros_camera_server]: SmartVideoDecoder: Initialized with VA[0m
-[camera_server_standalone-1] [33m[WARN] [1778002680.719243167] [ros_camera_server]: GStreamer log warning [GST_ELEMENT_FACTORY]: no such element factory "nvvideoconvert"![0m
-[camera_server_standalone-1] [33m[WARN] [1778002680.719260300] [ros_camera_server]: GStreamer log warning [GST_ELEMENT_FACTORY]: no such element factory "nvvidconv"![0m
-[camera_server_standalone-1] [0m[INFO] [1778002681.681378253] [ros_camera_server]: Using HW scaler 'cudascale' with memory:CUDAMemory for scale_1280x720_node_3[0m
-[camera_server_standalone-1] [0m[INFO] [1778002681.681416243] [ros_camera_server]: Using nvh264enc encoder[0m
-[camera_server_standalone-1] [0m[INFO] [1778002690.219266141] [ros_camera_server]: Camera Server Status:
+[camera_server_standalone-1] [0m[INFO] [1781825705.091256637] [ros_camera_server]: SmartVideoDecoder: Initialized with VA[0m
+[camera_server_standalone-1] [0m[INFO] [1781825705.099426528] [ros_camera_server]: Using HW scaler 'vapostproc' with memory:VAMemory for scale_1920x1080_node_3[0m
+[camera_server_standalone-1] [0m[INFO] [1781825705.099451109] [ros_camera_server]: Using vah264lpenc encoder[0m
+[camera_server_standalone-1] [0m[INFO] [1781825715.028711469] [ros_camera_server]: Camera Server Status:
 [camera_server_standalone-1] - bench
 [camera_server_standalone-1]     state: PLAYING
-[camera_server_standalone-1]     input fps: 30
+[camera_server_standalone-1]     input fps: 30.6
 [camera_server_standalone-1]     outputs:
-[camera_server_standalone-1]       - Output 1 (rtp, h264@1280x720, encoder: nvh264enc):
+[camera_server_standalone-1]       - Output 1 (rtp, h264@1920x1080, encoder: vah264lpenc):
 [camera_server_standalone-1]         status: active
-[camera_server_standalone-1]         fps: 30.2
-[camera_server_standalone-1]         processing time: 4.5ms (total since capture: 1.78e+12ms)
+[camera_server_standalone-1]         fps: 30.9
+[camera_server_standalone-1]         processing time: 10.9ms (total since capture: 1.78e+12ms)
+[camera_server_standalone-1]         clients: Unknown
+[camera_server_standalone-1] [0m
+[camera_server_standalone-1] [0m[INFO] [1781825725.028760849] [ros_camera_server]: Camera Server Status:
+[camera_server_standalone-1] - bench
+[camera_server_standalone-1]     state: PLAYING
+[camera_server_standalone-1]     input fps: 30.6
+[camera_server_standalone-1]     outputs:
+[camera_server_standalone-1]       - Output 1 (rtp, h264@1920x1080, encoder: vah264lpenc):
+[camera_server_standalone-1]         status: active
+[camera_server_standalone-1]         fps: 30.9
+[camera_server_standalone-1]         processing time: 9.3ms (total since capture: 1.78e+12ms)
 [camera_server_standalone-1]         clients: Unknown
 [camera_server_standalone-1] [0m
 [run_scenario] cleanup
-[0m[INFO] [1778002694.760172251] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
-gst_recv[udp-rtp]: seen=386 decoded=386 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run5/ros-stream-rcs-jpeg-rtp/stream.csv
+[0m[INFO] [1781825734.698366064] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+gst_recv[udp-rtp]: seen=884 decoded=884 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run5/ros-stream-rcs-jpeg-rtp/stream.csv

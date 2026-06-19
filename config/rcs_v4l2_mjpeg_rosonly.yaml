@@ -6,8 +6,8 @@ cameras:
     input:
       type: v4l2
       device: "/dev/video41"
-      width: 1280
-      height: 720
+      width: ${BENCH_WIDTH}
+      height: ${BENCH_HEIGHT}
       framerate: "30/1"
     # cam-ros-rcs-mjpeg: passthrough CompressedImage on ROS, no RTP output.
     # The dual-output config (rcs_v4l2_mjpeg.yaml) is reserved for

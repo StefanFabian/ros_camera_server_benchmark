@@ -6,8 +6,8 @@ cameras:
     input:
       type: v4l2
       device: "/dev/video41"
-      width: 1280
-      height: 720
+      width: ${BENCH_WIDTH}
+      height: ${BENCH_HEIGHT}
       framerate: "30/1"
     # cam-both-rcs-mjpeg-decoded-rtp: same as rcs_v4l2_mjpeg_decoded.yaml
     # plus an RTP H.264 output. Lets the cam-both dual-receiver matrix
@@ -27,5 +27,5 @@ cameras:
         host: "127.0.0.1"
         port: 7100
         bitrate: 1000
-        width: 1280
-        height: 720
+        width: ${BENCH_WIDTH}
+        height: ${BENCH_HEIGHT}

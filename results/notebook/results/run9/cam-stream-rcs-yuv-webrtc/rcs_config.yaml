@@ -6,9 +6,9 @@ cameras:
     name: "bench_v4l2_yuv_webrtc"
     input:
       type: v4l2
-      device: "/dev/video10"
-      width: 1280
-      height: 720
+      device: "/dev/video40"
+      width: 1920
+      height: 1080
       framerate: "30/1"
     # cam-stream-rcs-yuv-webrtc: WebRTC output only. No width/height — we don't want a
     # Scale node, just pass-through at input resolution.
@@ -17,6 +17,6 @@ cameras:
     outputs:
       - type: webrtc
         codec: h264
-        encoder: NV
+        encoder: VA_LP
         framerate: "30/1"
         bitrate: 1000

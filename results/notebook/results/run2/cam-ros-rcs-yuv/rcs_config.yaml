@@ -5,9 +5,9 @@ cameras:
     name: "bench_v4l2_yuv_rosonly"
     input:
       type: v4l2
-      device: "/dev/video10"
-      width: 1280
-      height: 720
+      device: "/dev/video40"
+      width: 1920
+      height: 1080
       framerate: "30/1"
     # cam-ros-rcs-yuv: ROS-topic-only output. The dual-output config
     # (rcs_v4l2_yuv.yaml) is reserved for cam-both-rcs-yuv-rtp; sharing it

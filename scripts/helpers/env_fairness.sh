@@ -35,13 +35,13 @@ source "$(dirname "${BASH_SOURCE[0]}")/resolve_encoder.sh"
 # configuration on whichever backend is selected.
 case "${BENCH_ENCODER}" in
   va)
-    BENCH_ENC_GST="vah264lpenc bitrate=${BITRATE} key-int-max=10 aud=true min-force-key-unit-interval=1000000000 num-slices=1 cabac=true dct8x8=true rate-control=vbr ref-frames=1"
+    BENCH_ENC_GST="vah264lpenc bitrate=${BITRATE} key-int-max=30 aud=true min-force-key-unit-interval=1000000000 num-slices=1 cabac=true dct8x8=true rate-control=vbr ref-frames=1"
     BENCH_RCS_ENC="VA_LP"
     BENCH_FFMPEG_ENC="h264_vaapi"
     # h264_vaapi: rc_mode=VBR (matches vah264lpenc rate-control=vbr).
     # quality=7 is the speed/quality slider's fastest end (low-latency).
     # idr_interval mirrors gop_size for a closed-GOP stream.
-    BENCH_FFMPEG_AV_OPTS="rc_mode:VBR,quality:7,idr_interval:10,async_depth:1"
+    BENCH_FFMPEG_AV_OPTS="rc_mode:VBR,quality:7,idr_interval:30,async_depth:1"
     # ffmpeg_image_transport calls av_hwdevice_ctx_create(VAAPI, NULL, ...)
     # which iterates /dev/dri/renderD%d from 128 and stops on the first
     # opener — no fallback when vaInitialize() fails. On hosts where
@@ -74,7 +74,7 @@ case "${BENCH_ENCODER}" in
     _BENCH_RANK_DEMOTIONS="nvh264enc:NONE,nvh264device0enc:NONE,nvv4l2h264enc:NONE,v4l2h264enc:NONE,qsvh264enc:NONE,mpph264enc:NONE,x264enc:NONE,nvh264dec:NONE,nvv4l2decoder:NONE,v4l2h264dec:NONE,qsvh264dec:NONE,mpph264dec:NONE,avdec_h264:NONE,nvjpegdec:NONE,qsvjpegdec:NONE,mppjpegdec:NONE"
     ;;
   nv)
-    BENCH_ENC_GST="nvh264enc preset=4 bitrate=${BITRATE} gop-size=10 strict-gop=true rc-mode=3 min-force-key-unit-interval=1000000000 spatial-aq=true zerolatency=true aud=true"
+    BENCH_ENC_GST="nvh264enc preset=4 bitrate=${BITRATE} gop-size=30 strict-gop=true rc-mode=3 min-force-key-unit-interval=1000000000 spatial-aq=true zerolatency=true aud=true"
     BENCH_RCS_ENC="NV"
     BENCH_FFMPEG_ENC="h264_nvenc"
     # h264_nvenc: preset=p1 (fastest), tune=ll (low-latency), zerolatency=1
@@ -96,7 +96,7 @@ case "${BENCH_ENCODER}" in
     # holds across families. profile=66 (baseline) / rc-mode=0 (vbr) /
     # max-pending=1 / zero-copy-pkt match the MPP branch in
     # ros_camera_server/src/codecs/h264.hpp:184-193.
-    BENCH_ENC_GST="mpph264enc bps=$((BITRATE * 1000)) gop=10 header-mode=1 profile=66 rc-mode=0 max-pending=1 min-force-key-unit-interval=1000000000 zero-copy-pkt=true"
+    BENCH_ENC_GST="mpph264enc bps=$((BITRATE * 1000)) gop=30 header-mode=1 profile=66 rc-mode=0 max-pending=1 min-force-key-unit-interval=1000000000 zero-copy-pkt=true"
     BENCH_RCS_ENC="MPP"
     BENCH_FFMPEG_ENC="h264_rkmpp"
     # h264_rkmpp: rc_mode=VBR matches mpph264enc rc-mode=0; level=3.0 baseline

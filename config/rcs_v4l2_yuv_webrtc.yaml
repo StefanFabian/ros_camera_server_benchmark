@@ -7,8 +7,8 @@ cameras:
     input:
       type: v4l2
       device: "/dev/video40"
-      width: 1280
-      height: 720
+      width: ${BENCH_WIDTH}
+      height: ${BENCH_HEIGHT}
       framerate: "30/1"
     # cam-stream-rcs-yuv-webrtc: WebRTC output only. No width/height — we don't want a
     # Scale node, just pass-through at input resolution.

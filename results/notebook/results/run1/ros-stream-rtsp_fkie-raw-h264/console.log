@@ -1,56 +1,93 @@
-+ ros2 run ros_camera_server_benchmarks ros_pub --ros-args -p kind:=raw -p topic:=/bench/image_raw -p width:=1280 -p height:=720 -p fps:=30 -p encode_stats:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run1/ros-stream-rtsp_fkie-raw-h264/ros_pub_stats.csv -p video:=../input.robocup_crossing_ramps.mp4 -p video_cycle_seconds:=60
-[0m[INFO] [1778000152.394002165] [ros_pub]: base video first frame ready, cycle capacity 1800[0m
++ ros2 run ros_camera_server_benchmarks ros_pub --ros-args -p kind:=raw -p topic:=/bench/image_raw -p width:=1920 -p height:=1080 -p fps:=30 -p encode_stats:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run1/ros-stream-rtsp_fkie-raw-h264/ros_pub_stats.csv -p video:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/input.mrs_multi_floor_legged.mkv
+[0m[INFO] [1781820097.564557622] [FFMPEGPublisher]: using libav encoder: libx264[0m
+[33m[WARN] [1781820097.564719049] [ros_pub]: gop_size not set, defaulting to 10. This may severely affect lag and performance![0m
+[0m[INFO] [1781820097.569581389] [ros_pub]: [/bench/image_raw] new RTSP session at rtsp://192.168.238.110:59633/[0m
+[0m[INFO] [1781820097.650217503] [ros_pub]: base video first frame ready, cycle capacity 150[0m
 + ros2 launch ros_camera_server_benchmarks rtsp_h264_ros_raw.launch.yaml image_topic:=/bench/image_raw rtsp_bitrate:=1000000
-[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-18-55-52-895961-Stefan-TP-Ubuntu24-205594
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-06-19-00-01-39-571614-Stefan-TP-Ubuntu24-1178661
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [republish-1]: process started with pid [205638]
-[republish-1] [0m[INFO] [1778000153.023444477] [rtsp_republisher]: The 'in_transport' parameter is set to: raw[0m
-[republish-1] [0m[INFO] [1778000153.023500028] [rtsp_republisher]: The 'out_transport' parameter is set to: [0m
-[republish-1] [0m[INFO] [1778000153.101285782] [rtsp_republisher]: [/out] new RTSP session at rtsp://192.168.238.101:60069/[0m
+[INFO] [republish-1]: process started with pid [1178666]
+[republish-1] [0m[INFO] [1781820099.670615861] [rtsp_republisher]: The 'in_transport' parameter is set to: raw[0m
+[republish-1] [0m[INFO] [1781820099.670657918] [rtsp_republisher]: The 'out_transport' parameter is set to: [0m
+[republish-1] [0m[INFO] [1781820099.734169973] [FFMPEGPublisher]: using libav encoder: libx264[0m
+[republish-1] [33m[WARN] [1781820099.734676492] [rtsp_republisher]: gop_size not set, defaulting to 10. This may severely affect lag and performance![0m
+[republish-1] [0m[INFO] [1781820099.740133740] [rtsp_republisher]: [/out] new RTSP session at rtsp://192.168.238.110:57301/[0m
 + ros2 topic hz /out
-+ bash -c ros2 topic echo --qos-durability transient_local                                     --qos-reliability reliable                                     --qos-history keep_last --qos-depth 1                                     '/out/rtsp' std_msgs/msg/String                     > '/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run1/ros-stream-rtsp_fkie-raw-h264/rtsp_url.log' 2>&1
-average rate: 30.077
-	min: 0.032s max: 0.036s std dev: 0.00065s window: 32
++ bash -c ros2 topic echo --qos-durability transient_local                                     --qos-reliability reliable                                     --qos-history keep_last --qos-depth 1                                     '/out/rtsp' std_msgs/msg/String                     > '/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run1/ros-stream-rtsp_fkie-raw-h264/rtsp_url.log' 2>&1
+average rate: 30.277
+	min: 0.029s max: 0.036s std dev: 0.00120s window: 32
 + ros2 launch ros_camera_server_benchmarks rtsp_camera_proxy_recv.launch.yaml in_base:=/out out_topic:=/bench/rtsp_recv_image
-[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-05-05-18-55-57-856784-Stefan-TP-Ubuntu24-205914
+[INFO] [launch]: All log files can be found below /home/stefan/.ros/log/2026-06-19-00-01-44-592614-Stefan-TP-Ubuntu24-1178968
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [republish-1]: process started with pid [205932]
-[republish-1] [0m[INFO] [1778000157.966774808] [rtsp_subscriber]: The 'in_transport' parameter is set to: raw[0m
-[republish-1] [0m[INFO] [1778000157.966823261] [rtsp_subscriber]: The 'out_transport' parameter is set to: [0m
-[republish-1] [0m[INFO] [1778000158.042735090] [rtsp_subscriber]: [/out] new RTSP session at rtsp://192.168.238.101:47339/[0m
-+ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_stream -p topic:=/bench/rtsp_recv_image -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run1/ros-stream-rtsp_fkie-raw-h264/stream.csv -p warmup:=60 -p max_frames:=750
-+ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/cpu_sample.py --sids 205594 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run1/ros-stream-rtsp_fkie-raw-h264/cpu.csv --interval-hz 2 --duration 15
-average rate: 30.023
-	min: 0.031s max: 0.037s std dev: 0.00079s window: 63
-average rate: 30.007
-	min: 0.030s max: 0.038s std dev: 0.00091s window: 93
+[INFO] [republish-1]: process started with pid [1178973]
+[republish-1] [0m[INFO] [1781820104.698464021] [rtsp_subscriber]: The 'in_transport' parameter is set to: raw[0m
+[republish-1] [0m[INFO] [1781820104.698499932] [rtsp_subscriber]: The 'out_transport' parameter is set to: [0m
+[republish-1] [0m[INFO] [1781820104.770646757] [FFMPEGPublisher]: using libav encoder: libx264[0m
+[republish-1] [33m[WARN] [1781820104.770790654] [rtsp_subscriber]: gop_size not set, defaulting to 10. This may severely affect lag and performance![0m
+[republish-1] [0m[INFO] [1781820104.777887533] [rtsp_subscriber]: [/out] new RTSP session at rtsp://192.168.238.110:44149/[0m
+average rate: 30.137
+	min: 0.027s max: 0.039s std dev: 0.00171s window: 62
++ ros2 run ros_camera_server_benchmarks ros_recv --ros-args -r __node:=ros_recv_stream -p topic:=/bench/rtsp_recv_image -p kind:=raw -p csv:=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run1/ros-stream-rtsp_fkie-raw-h264/stream.csv -p warmup:=60 -p max_frames:=900
++ python3 /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/helpers/cpu_sample.py --sids 1178661 --csv /home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run1/ros-stream-rtsp_fkie-raw-h264/cpu.csv --interval-hz 2 --duration 30
+average rate: 30.102
+	min: 0.027s max: 0.039s std dev: 0.00144s window: 93
+average rate: 30.077
+	min: 0.027s max: 0.039s std dev: 0.00126s window: 123
+average rate: 30.054
+	min: 0.027s max: 0.039s std dev: 0.00114s window: 154
+average rate: 30.051
+	min: 0.027s max: 0.039s std dev: 0.00106s window: 185
+average rate: 30.045
+	min: 0.027s max: 0.039s std dev: 0.00106s window: 216
+average rate: 30.039
+	min: 0.027s max: 0.039s std dev: 0.00100s window: 246
+average rate: 30.034
+	min: 0.027s max: 0.039s std dev: 0.00095s window: 277
+average rate: 30.032
+	min: 0.027s max: 0.039s std dev: 0.00091s window: 308
+average rate: 30.028
+	min: 0.027s max: 0.039s std dev: 0.00087s window: 338
+average rate: 30.025
+	min: 0.027s max: 0.039s std dev: 0.00084s window: 368
+average rate: 30.021
+	min: 0.027s max: 0.039s std dev: 0.00082s window: 399
+average rate: 30.022
+	min: 0.027s max: 0.039s std dev: 0.00080s window: 430
+average rate: 30.021
+	min: 0.027s max: 0.039s std dev: 0.00078s window: 461
+average rate: 30.019
+	min: 0.027s max: 0.039s std dev: 0.00076s window: 491
+average rate: 30.018
+	min: 0.027s max: 0.040s std dev: 0.00084s window: 522
+average rate: 30.018
+	min: 0.027s max: 0.040s std dev: 0.00082s window: 553
 average rate: 30.016
-	min: 0.030s max: 0.038s std dev: 0.00082s window: 124
+	min: 0.027s max: 0.040s std dev: 0.00081s window: 583
+average rate: 30.016
+	min: 0.027s max: 0.040s std dev: 0.00079s window: 614
+average rate: 30.015
+	min: 0.027s max: 0.040s std dev: 0.00078s window: 644
+average rate: 30.014
+	min: 0.027s max: 0.040s std dev: 0.00076s window: 675
 average rate: 30.013
-	min: 0.030s max: 0.038s std dev: 0.00075s window: 154
+	min: 0.027s max: 0.040s std dev: 0.00075s window: 705
+average rate: 30.013
+	min: 0.027s max: 0.040s std dev: 0.00074s window: 736
+average rate: 30.013
+	min: 0.027s max: 0.040s std dev: 0.00072s window: 767
+average rate: 30.012
+	min: 0.027s max: 0.040s std dev: 0.00071s window: 797
 average rate: 30.011
-	min: 0.030s max: 0.038s std dev: 0.00070s window: 185
-average rate: 29.996
-	min: 0.030s max: 0.038s std dev: 0.00069s window: 216
-average rate: 30.008
-	min: 0.030s max: 0.038s std dev: 0.00072s window: 247
-average rate: 30.007
-	min: 0.030s max: 0.038s std dev: 0.00069s window: 278
-average rate: 30.006
-	min: 0.030s max: 0.038s std dev: 0.00066s window: 309
-average rate: 30.006
-	min: 0.030s max: 0.038s std dev: 0.00064s window: 340
-average rate: 30.006
-	min: 0.030s max: 0.038s std dev: 0.00063s window: 370
-average rate: 30.005
-	min: 0.030s max: 0.038s std dev: 0.00062s window: 401
-average rate: 30.005
-	min: 0.030s max: 0.038s std dev: 0.00060s window: 432
-average rate: 30.004
-	min: 0.030s max: 0.038s std dev: 0.00058s window: 462
-average rate: 30.002
-	min: 0.030s max: 0.038s std dev: 0.00057s window: 493
+	min: 0.027s max: 0.040s std dev: 0.00073s window: 828
+average rate: 30.011
+	min: 0.027s max: 0.040s std dev: 0.00072s window: 859
+average rate: 30.011
+	min: 0.027s max: 0.040s std dev: 0.00071s window: 890
+average rate: 30.011
+	min: 0.027s max: 0.040s std dev: 0.00071s window: 920
+average rate: 30.010
+	min: 0.027s max: 0.040s std dev: 0.00070s window: 950
 [run_scenario] cleanup
-[0m[INFO] [1778000173.608644106] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
-[0m[INFO] [1778000173.608690621] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
-ros_recv: seen=445 decoded=445 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/scripts/results/run1/ros-stream-rtsp_fkie-raw-h264/stream.csv
+[0m[INFO] [1781820135.371354594] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+[0m[INFO] [1781820135.374655011] [rclcpp]: signal_handler(SIGINT/SIGTERM)[0m
+ros_recv: seen=896 decoded=896 csv=/home/stefan/workspaces/claude/src/ros_camera_server_benchmarks/results/run1/ros-stream-rtsp_fkie-raw-h264/stream.csv
