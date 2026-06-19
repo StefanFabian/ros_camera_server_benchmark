@@ -37,10 +37,10 @@ import numpy as np
 RECEIVERS = ("stream", "ros_raw", "ros_jpeg")
 
 GROUP_TITLES = {
-    "cam-ros":    "cam-ros — Camera → ROS topic",
-    "cam-stream": "cam-stream — Camera → encoded stream",
-    "ros-stream": "ros-stream — ROS image → encoded stream",
-    "cam-both":   "cam-both — Camera → stream + ROS topic",
+    "cam-ros":    "Camera → ROS topic",
+    "cam-stream": "Camera → encoded stream",
+    "ros-stream": "ROS image → encoded stream",
+    "cam-both":   "Camera → stream + ROS topic",
 }
 
 GROUP_RE = re.compile(r"^(cam-ros|cam-stream|ros-stream|cam-both)-")
@@ -56,6 +56,29 @@ P95_ALPHA = 0.25
 INTRA_STACK_GAP = 0.0
 INTER_STACK_GAP = 0.6
 BAR_WIDTH = 0.8
+
+# Font sizes (points). Enlarged so the figures stay legible when placed at
+# full A4 width in a paper. Tweak here to scale all text together.
+BASE_FONTSIZE = 13       # default text / fallback
+TITLE_FONTSIZE = 17      # group title (top, bold)
+SUBTITLE_FONTSIZE = 14   # descriptor line under the title
+AXIS_LABEL_FONTSIZE = 16
+TICK_FONTSIZE = 14
+VALUE_FONTSIZE = 12      # numeric labels drawn on top of bars
+LEGEND_FONTSIZE = 13
+
+
+def _apply_font_sizes() -> None:
+    """Bump matplotlib's base font sizes for paper-ready figures."""
+    plt.rcParams.update({
+        "font.size": BASE_FONTSIZE,
+        "axes.titlesize": SUBTITLE_FONTSIZE,
+        "axes.labelsize": AXIS_LABEL_FONTSIZE,
+        "xtick.labelsize": TICK_FONTSIZE,
+        "ytick.labelsize": TICK_FONTSIZE,
+        "legend.fontsize": LEGEND_FONTSIZE,
+        "figure.titlesize": TITLE_FONTSIZE,
+    })
 
 
 def median(xs):
@@ -186,7 +209,7 @@ def build_bars(group: str, group_data: dict):
                 x += BAR_WIDTH + INTRA_STACK_GAP
             if xs_in_stack:
                 stack_centers.append(sum(xs_in_stack) / len(xs_in_stack))
-                stack_labels.append(_short_scenario(group, sc))
+                stack_labels.append(_stack_label(group, sc))
             x += INTER_STACK_GAP
         return bars, stack_centers, stack_labels
 
@@ -215,6 +238,23 @@ def _short_scenario(group: str, scenario: str) -> str:
     """Drop the group prefix for tighter x-tick labels."""
     prefix = f"{group}-"
     return scenario[len(prefix):] if scenario.startswith(prefix) else scenario
+
+
+def _stack_label(group: str, scenario: str) -> str:
+    """x-tick label for a cam-both stack, split over two lines as
+    PIPELINE / INPUT-TRANSPORT (e.g. 'rcs' / 'mjpeg-decoded-rtp').
+
+    Scenario after the group prefix is PIPELINE-INPUT-TRANSPORT where
+    PIPELINE is the first token (may contain '+'), TRANSPORT the last, and
+    INPUT everything in between (one or two tokens, e.g. 'mjpeg-decoded').
+    """
+    short = _short_scenario(group, scenario)
+    parts = short.split("-")
+    if len(parts) < 3:
+        return short
+    pipeline, transport = parts[0], parts[-1]
+    inp = "-".join(parts[1:-1])
+    return f"{pipeline}\n{inp}-{transport}"
 
 
 def plot_group(group: str, group_data: dict, group_cpu: dict,
@@ -247,12 +287,19 @@ def plot_group(group: str, group_data: dict, group_cpu: dict,
            zorder=2)
     for xi, v in zip(xs, p50):
         ax.text(xi, v, f"{v:.1f}", ha="center", va="bottom",
-                fontsize=8, zorder=3)
-    ax.set_ylabel("Latency (ms)")
-    ax.set_title(f"{GROUP_TITLES.get(group, group)}\n"
-                 f"bars: p50 median (error: per-run min..max), "
-                 f"faded: p95 median  —  N={n_runs} run(s)",
-                 fontsize=10)
+                fontsize=VALUE_FONTSIZE, zorder=3)
+    ax.set_ylabel("Latency (ms)", fontsize=AXIS_LABEL_FONTSIZE)
+    # Subtitle pinned just above the axes; main title raised above it by `pad`.
+    # Both anchored to the axes top so the layout engine spaces them and the
+    # gap to the plot stays constant regardless of figure size.
+    ax.annotate(f"bars: p50 median (per-run min..max), "
+                f"faded: p95 median  N={n_runs} run(s)",
+                xy=(0.5, 1.0), xycoords="axes fraction",
+                xytext=(0, 6), textcoords="offset points",
+                ha="center", va="bottom",
+                fontsize=SUBTITLE_FONTSIZE, color="#444")
+    ax.set_title(GROUP_TITLES.get(group, group),
+                 fontsize=TITLE_FONTSIZE, fontweight="bold", pad=28)
     ax.grid(axis="y", linestyle=":", alpha=0.5, zorder=0)
     ax.set_axisbelow(True)
 
@@ -261,8 +308,9 @@ def plot_group(group: str, group_data: dict, group_cpu: dict,
         from matplotlib.patches import Patch
         handles = [Patch(facecolor=RECEIVER_COLORS[r], edgecolor="black",
                          linewidth=0.4, label=r) for r in used_recvs]
-        ax.legend(handles=handles, loc="upper left", fontsize=8,
-                  framealpha=0.9, title="receiver")
+        ax.legend(handles=handles, loc="upper left", fontsize=LEGEND_FONTSIZE,
+                  framealpha=0.9, title="receiver",
+                  title_fontsize=LEGEND_FONTSIZE)
 
     # CPU panel — one bar per scenario (per stack in cam-both), placed at
     # the centre of that stack's latency bars and widened to span them.
@@ -302,25 +350,28 @@ def plot_group(group: str, group_data: dict, group_cpu: dict,
                    edgecolor="black", linewidth=0.4, zorder=2)
         for xi, v in zip(cpu_xs_a, cpu_mean_a):
             ax_cpu.text(xi, v, f"{v:.0f}", ha="center", va="bottom",
-                        fontsize=8, zorder=3)
+                        fontsize=VALUE_FONTSIZE, zorder=3)
     else:
         ax_cpu.text(0.5, 0.5, "no cpu_stack data", ha="center", va="center",
-                    transform=ax_cpu.transAxes, fontsize=9, color="#666")
+                    transform=ax_cpu.transAxes, fontsize=VALUE_FONTSIZE,
+                    color="#666")
 
-    ax_cpu.set_ylabel("CPU (%)")
+    ax_cpu.set_ylabel("CPU (%)", fontsize=AXIS_LABEL_FONTSIZE)
     ax_cpu.grid(axis="y", linestyle=":", alpha=0.5, zorder=0)
     ax_cpu.set_axisbelow(True)
 
-    # x-tick labels: per-stack in cam-both, per-bar elsewhere.
+    # x-tick labels: cam-both gets two-line PIPELINE / INPUT-TRANSPORT labels
+    # (one per stack); other groups keep one rotated label per bar.
     if group == "cam-both" and stack_centers:
         ax_cpu.set_xticks(stack_centers)
         tick_labels = ax_cpu.set_xticklabels(stack_labels, rotation=45,
-                                             ha="right", fontsize=8)
+                                             ha="right", rotation_mode="anchor",
+                                             fontsize=TICK_FONTSIZE)
     else:
         ax_cpu.set_xticks(xs)
         tick_labels = ax_cpu.set_xticklabels([b["label"] for b in bars],
                                              rotation=45, ha="right",
-                                             fontsize=8)
+                                             fontsize=TICK_FONTSIZE)
     for t in tick_labels:
         if t.get_text().lower().startswith("rcs"):
             t.set_fontweight("bold")
@@ -348,6 +399,7 @@ def main() -> int:
         print(f"results root {args.results_root} does not exist", file=sys.stderr)
         return 2
 
+    _apply_font_sizes()
     acc, cpu, runs = collect(args.results_root)
     if not acc:
         return 2
